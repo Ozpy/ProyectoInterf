@@ -10,9 +10,6 @@
     <string name="nombre_d">Calle y Número</string>
     <string name="col_d">Colonia</string>
     <string name="pc_d">Código Postal</string>
-    <string name="cuidad_d">Ciudad</string>
-    <string name="estad_d">Estado</string>
-    <string name="pais_d">País</string>
 
     <string name="PbtnActualizar">Actualizar</string>
 
@@ -22,5 +19,9 @@
 
     <string name="titu_p">Productos</string>
     <string name="enviar_p">Enviar</string>
-    <string name="fact">Facturar</string>
+    <string name="regdir">REGISTRAR DIRECCION</string>
+
+    <string name="fact">FACTURAR</string>
+
+
 </resources>
