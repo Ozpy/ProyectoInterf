@@ -40,6 +40,7 @@ public class AdapterContactos extends RecyclerView.Adapter<AdapterContactos.View
     public class ViewHolderContactos extends RecyclerView.ViewHolder {
         TextView etiNombre,etiEmail;
             ImageView foto;
+            int a;
         public ViewHolderContactos(@NonNull View itemView) {
             super(itemView);
             etiNombre=(TextView)itemView.findViewById(R.id.tvNombre);
