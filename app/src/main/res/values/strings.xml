@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">ProyectoInterf</string>
+    <string name="pntxt">Producto Nuevo</string>
+    <string name="nombre_pntxt">Nombre</string>
+    <string name="descri_pntxt">Descripción</string>
+    <string name="rb1_pntxt">Local</string>
+    <string name="rb2_pntxt">Importado</string>
+    <string name="APbtnSend">Agregar</string>
+    <string name="MAbtnIniciar">Iniciar sesion</string>
+    <string name="nombre_d">Calle y Número</string>
+    <string name="col_d">Colonia</string>
+    <string name="pc_d">Código Postal</string>
+    <string name="cuidad_d">Ciudad</string>
+    <string name="estad_d">Estado</string>
+    <string name="pais_d">País</string>
+
+    <string name="PbtnActualizar">Actualizar</string>
+
+    <string name="nombre">Nombre de Usuario</string>
+    <string name="enviar">Enviar</string>
+    <string name="escribe">Escribe un mensaje...</string>
+
+    <string name="titu_p">Productos</string>
+    <string name="enviar_p">Enviar</string>
+    <string name="fact">Facturar</string>
+</resources>
