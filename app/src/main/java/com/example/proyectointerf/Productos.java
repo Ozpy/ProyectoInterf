@@ -42,6 +42,9 @@ public class Productos extends AppCompatActivity {
         listaProductos.add(new Producto("Cuaderno", "Cuaderno profesional cuadro chico",R.mipmap.lapiz));
         listaProductos.add(new Producto("Borrador", "Borrador de migajon",R.mipmap.lapiz));
     }
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();

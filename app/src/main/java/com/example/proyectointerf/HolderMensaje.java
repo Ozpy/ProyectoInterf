@@ -1,0 +1,26 @@
+package com.example.proyectointerf;
+
+import android.view.View;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class HolderMensaje extends RecyclerView.ViewHolder {
+
+    TextView nombre;
+    TextView mensaje;
+    TextView hora;
+    CircleImageView fotoMensaje;
+
+    public HolderMensaje(@NonNull View itemView) {
+        super(itemView);
+        nombre=(TextView) itemView.findViewById(R.id.nombreMensaje);
+        mensaje=(TextView)itemView.findViewById(R.id.mensajeMensaje);
+        hora=(TextView)itemView.findViewById(R.id.horaMensaje);
+        fotoMensaje=(CircleImageView)itemView.findViewById(R.id.fotoPerfilMensaje);
+    }
+
+}
