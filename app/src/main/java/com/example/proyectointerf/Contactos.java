@@ -42,10 +42,8 @@ public class Contactos extends AppCompatActivity {
 
         AdapterContactos adapterContactos=new AdapterContactos(listaContactos);
         recyclerContactos.setAdapter(adapterContactos);
-
-
-
     }
+
     private void llenarContactos() {
 
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this,"administracion",null,1);//NOMBRE DE ADMINISTRADOR
@@ -54,6 +52,7 @@ public class Contactos extends AppCompatActivity {
 
         Cursor fila = BaseDeDatos.rawQuery("select * from usuario", null);
         String guardado;
+
         if(fila.moveToFirst()){
             do {
                 listaContactos.add(new ContactoVo(fila.getString(1),fila.getString(2),R.mipmap.usuario));

@@ -17,6 +17,7 @@ public class AdminSQLiteOpenHelper extends SQLiteOpenHelper {
         BaseDeDatos.execSQL("create table producto(idProducto text primary key ,nombre text,descripcion text, tipo text, nacionalidad text)");
     }
 
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 

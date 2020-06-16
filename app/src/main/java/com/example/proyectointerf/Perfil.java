@@ -45,7 +45,6 @@ public class Perfil extends AppCompatActivity  {
     Button logout;
     ImageView perfilImagen;
     TextView tv;
-    Uri personPhoto;
     int i=0;
 
     @Override
@@ -77,7 +76,7 @@ public class Perfil extends AppCompatActivity  {
         et_colonia=findViewById(R.id.edt_col);
 
         if(signInAccount != null){
-             personPhoto = signInAccount.getPhotoUrl();
+            Uri personPhoto = signInAccount.getPhotoUrl();
 
             name.setText(signInAccount.getDisplayName());
             mail.setText(signInAccount.getEmail());
@@ -134,7 +133,7 @@ public class Perfil extends AppCompatActivity  {
         datosUsuario.put("calle",calle);
         datosUsuario.put("colonia",colonia);
         datosUsuario.put("codigopostal",codigopost);
-        datosUsuario.put("foto",personPhoto);
+        datosUsuario.put("foto",foto);
 
         mRootReference.child("Usuario").push().setValue(datosUsuario);
     }
@@ -196,7 +195,7 @@ public class Perfil extends AppCompatActivity  {
         Intent intent;
         switch (item.getItemId()){
             case R.id.item_lista:
-                 intent = new Intent(this,Productos.class);
+                intent = new Intent(this,Productos.class);
                 startActivity(intent);
                 this.finish();
                 return true;
@@ -215,4 +214,3 @@ public class Perfil extends AppCompatActivity  {
         }
     }
 }
-
