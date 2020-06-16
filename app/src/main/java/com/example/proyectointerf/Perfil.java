@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,8 +27,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +45,7 @@ public class Perfil extends AppCompatActivity  {
 
     TextView name, mail;
     EditText et_calle,et_colonia,et_codigopost;
-    String id_local,id_fire,nombre,correo,calle,colonia,foto,codigopost;
+    String id_fire,nombre,correo,calle,colonia,foto,codigopost;
     Button logout;
     ImageView perfilImagen;
     TextView tv;
@@ -54,6 +58,7 @@ public class Perfil extends AppCompatActivity  {
 
 
         //getSupportActionBar().hide();    //Esconder barra superior
+
 
         mRootReference= FirebaseDatabase.getInstance().getReference(); //Hace referencia a la base de datos en el nodo principal
 
@@ -96,6 +101,7 @@ public class Perfil extends AppCompatActivity  {
                 startActivity(i);
             }
         });
+
     }
 
     public void registrar (View view) {
@@ -212,5 +218,48 @@ public class Perfil extends AppCompatActivity  {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+    private void solicitarDatosFirebase() {
+        mRootReference.child("Usuario").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
+
+                    mRootReference.child("Usuario").child(snapshot.getKey()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            UserFirebase user = snapshot.getValue(UserFirebase.class);
+                            String nombre = user.getNombre();
+                            String apellido = user.getCorreo();
+                            String telefono = user.getCalle();
+                            String direccion = user.getCodigopost();
+
+                            Log.e("NombreUsuario:",""+nombre);
+                            Log.e("ApellidoUsuario:",""+apellido);
+                            Log.e("TelefonoUsuario:",""+telefono);
+                            Log.e("DireccionUsuario:",""+direccion);
+                            Log.e("Datos:",""+snapshot.getValue());
+                            Toast.makeText(Perfil.this, ""+nombre, Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+
+                    });
+
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }
