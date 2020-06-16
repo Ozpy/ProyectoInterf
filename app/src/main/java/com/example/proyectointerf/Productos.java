@@ -2,8 +2,12 @@ package com.example.proyectointerf;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,9 +42,34 @@ public class Productos extends AppCompatActivity {
         listaProductos.add(new Producto("Cuaderno", "Cuaderno profesional cuadro chico",R.mipmap.lapiz));
         listaProductos.add(new Producto("Borrador", "Borrador de migajon",R.mipmap.lapiz));
     }
-    public void ir (View view){
-        Intent intent = new Intent(this, Chat.class);
-        startActivity(intent);
-        this.finish();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_productos, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent intent;
+        switch (item.getItemId()){
+            case R.id.item_add:
+                intent = new Intent(this,AgregarProducto.class);
+                startActivity(intent);
+                this.finish();
+                return true;
+            case R.id.item_contactos:
+                intent = new Intent(this,Contactos.class);
+                startActivity(intent);
+                this.finish();
+                return true;
+            case R.id.item_perfil:
+                intent = new Intent(this,Perfil.class);
+                startActivity(intent);
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
