@@ -14,6 +14,7 @@ public class AdminSQLiteOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase BaseDeDatos) {
         BaseDeDatos.execSQL("create table usuario(id_firebase text primary key ,nombre text,correo text, calle text,colonia text, codigopostal text)");
+        BaseDeDatos.execSQL("create table producto(idProducto text primary key ,nombre text,descripcion text, tipo text, nacionalidad text)");
     }
 
     @Override
