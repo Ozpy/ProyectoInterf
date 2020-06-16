@@ -52,7 +52,7 @@ public class Contactos extends AppCompatActivity {
         String guardado;
         if(fila.moveToFirst()){
             do {
-                listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
+                listaContactos.add(new ContactoVo(fila.getString(1),fila.getString(2),R.mipmap.usuario));
             }while (fila.moveToNext());
             BaseDeDatos.close();
         }

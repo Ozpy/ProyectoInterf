@@ -60,11 +60,6 @@ public class Perfil extends AppCompatActivity  {
         et_codigopost=findViewById(R.id.edt_pc);
         et_colonia=findViewById(R.id.edt_col);
 
-
-
-
-
-
         if(signInAccount != null){
             Uri personPhoto = signInAccount.getPhotoUrl();
 
@@ -140,7 +135,7 @@ public class Perfil extends AppCompatActivity  {
     }
 
     public void ir(View view){
-        Intent i = new Intent(this,Productos.class);
+        Intent i = new Intent(this,Contactos.class);
         startActivity(i);
     }
 
