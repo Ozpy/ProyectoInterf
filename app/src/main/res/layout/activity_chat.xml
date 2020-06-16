@@ -42,7 +42,6 @@
             android:layout_marginTop="15dp"
             android:layout_weight="1"
             android:background="@layout/esquinas_redondeadas"
-            android:onClick="regresar"
             app:srcCompat="@android:drawable/ic_menu_revert" />
 
     </LinearLayout>
@@ -75,8 +74,6 @@
             android:layout_height="50dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="15dp"
-            android:background="@layout/esquinas_redondeadas"
-            android:onClick="ir"
             app:srcCompat="@android:drawable/ic_menu_send" />
 
     </LinearLayout>
