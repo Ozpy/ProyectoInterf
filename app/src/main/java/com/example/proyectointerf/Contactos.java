@@ -1,12 +1,16 @@
 package com.example.proyectointerf;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.proyectointerf.BD.AdminSQLiteOpenHelper;
 
 import java.util.ArrayList;
 
@@ -38,24 +42,20 @@ public class Contactos extends AppCompatActivity {
     }
 
     private void llenarContactos() {
-        listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
-        listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
-        listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
-        listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
-        listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
-        listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
-        listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
-        listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
-        listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
-        listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
-        listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
-        listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
-        listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
-        listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
-        listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
-        listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
-        listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
-        listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
+
+
+        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this,"administracion",null,1);//NOMBRE DE ADMINISTRADOR
+        SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
+
+
+        Cursor fila = BaseDeDatos.rawQuery("select * from usuario", null);
+        String guardado;
+        if(fila.moveToFirst()){
+            do {
+                listaContactos.add(new ContactoVo("HOALALSOASSAD","asasadda@gmail.com",R.mipmap.usuario));
+            }while (fila.moveToNext());
+            BaseDeDatos.close();
+        }
     }
     public void ir(View view){
         Intent i = new Intent(this,AgregarProducto.class);

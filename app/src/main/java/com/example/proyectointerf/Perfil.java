@@ -59,14 +59,13 @@ public class Perfil extends AppCompatActivity  {
         et_calle=findViewById(R.id.edt_calle);
         et_codigopost=findViewById(R.id.edt_pc);
         et_colonia=findViewById(R.id.edt_col);
-    tv=findViewById(R.id.tv);
+
 
 
 
 
 
         if(signInAccount != null){
-
             Uri personPhoto = signInAccount.getPhotoUrl();
 
             name.setText(signInAccount.getDisplayName());
@@ -141,7 +140,7 @@ public class Perfil extends AppCompatActivity  {
     }
 
     public void ir(View view){
-        Intent i = new Intent(this,Chat.class);
+        Intent i = new Intent(this,Productos.class);
         startActivity(i);
     }
 
@@ -152,6 +151,5 @@ public class Perfil extends AppCompatActivity  {
         BaseDeDatos.execSQL("create table usuario(id_firebase text primary key ,nombre text,correo text, calle text,colonia text, codigopostal text)");
         BaseDeDatos.close();
     }
-
 }
 

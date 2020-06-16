@@ -38,7 +38,6 @@ public class Productos extends AppCompatActivity {
         listaProductos.add(new Producto("Pluma", "Pluma negra",R.mipmap.lapiz));
         listaProductos.add(new Producto("Cuaderno", "Cuaderno profesional cuadro chico",R.mipmap.lapiz));
         listaProductos.add(new Producto("Borrador", "Borrador de migajon",R.mipmap.lapiz));
-
     }
     public void ir (View view){
         Intent intent = new Intent(this, Chat.class);
