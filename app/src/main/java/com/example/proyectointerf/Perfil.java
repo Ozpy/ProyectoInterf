@@ -26,13 +26,22 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Perfil extends AppCompatActivity  {
 
     private GoogleSignInClient mGoogleSignInClient;
+
+    private DatabaseReference mRootReference;    //Agrgar para la base de datos
+
+
     TextView name, mail;
     EditText et_calle,et_colonia,et_codigopost;
-    String id_local,id_fire,nombre,correo,calle,colonia,codigopost;
+    String id_local,id_fire,nombre,correo,calle,colonia,foto,codigopost;
     Button logout;
     ImageView perfilImagen;
     TextView tv;
@@ -43,8 +52,10 @@ public class Perfil extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
 
-        //Esconder barra superior
-        //getSupportActionBar().hide();
+
+        //getSupportActionBar().hide();    //Esconder barra superior
+
+        mRootReference= FirebaseDatabase.getInstance().getReference(); //Hace referencia a la base de datos en el nodo principal
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -69,7 +80,8 @@ public class Perfil extends AppCompatActivity  {
 
             name.setText(signInAccount.getDisplayName());
             mail.setText(signInAccount.getEmail());
-            Glide.with(this).load(String.valueOf(personPhoto)).into(perfilImagen);
+            foto=String.valueOf(personPhoto);
+            Glide.with(this).load(foto).into(perfilImagen);      //MANDAR FOTO
         }
 
 
@@ -92,7 +104,6 @@ public class Perfil extends AppCompatActivity  {
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this,"administracion",null,1);//NOMBRE DE ADMINISTRADOR
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
 
-
         ContentValues registro = new ContentValues();
 
         registro.put("id_firebase",id_fire);
@@ -105,7 +116,26 @@ public class Perfil extends AppCompatActivity  {
         BaseDeDatos.insert("usuario",null,registro); //NOMBRE DE BASE DE DATOS
         BaseDeDatos.close();
         Toast.makeText(this, "Registrado Correctamente", Toast.LENGTH_SHORT).show();
+
+
+        //EN FIREBASE
+        LlenarDatosFirebase();
+
         ir();
+
+    }
+
+    private void LlenarDatosFirebase() {            //En firebase
+        Map<String,Object> datosUsuario = new HashMap<>();
+
+        datosUsuario.put("nombre",nombre);
+        datosUsuario.put("correo",correo);
+        datosUsuario.put("calle",calle);
+        datosUsuario.put("colonia",colonia);
+        datosUsuario.put("codigopostal",codigopost);
+        datosUsuario.put("foto",foto);
+
+        mRootReference.child("Usuario").push().setValue(datosUsuario);
     }
 
     private void leer(){
@@ -182,7 +212,6 @@ public class Perfil extends AppCompatActivity  {
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
 }
 
