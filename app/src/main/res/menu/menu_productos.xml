@@ -5,16 +5,16 @@
     <item
         android:id="@+id/item_add"
         android:icon="@drawable/ic_add_product"
-        android:title="Item"
+        android:title="Añadir producto"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_contactos"
         android:icon="@drawable/ic_contacts_black_24dp"
-        android:title="Item"
+        android:title="Contactos"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_perfil"
         android:icon="@drawable/ic_perfil"
-        android:title="Item"
+        android:title="Perfil"
         app:showAsAction="ifRoom" />
 </menu>

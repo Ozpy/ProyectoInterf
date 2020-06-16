@@ -15,26 +15,28 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proyectointerf.BD.AdminSQLiteOpenHelper;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 
 public class Contactos extends AppCompatActivity {
+
     ArrayList<ContactoVo> listaContactos;
     RecyclerView recyclerContactos;
+
+    private DatabaseReference mRootReference;    //Agrgar para la base de datos
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contactos);
-
         //Esconder barra superior
         //getSupportActionBar().hide();
 
         listaContactos = new ArrayList<>();
         recyclerContactos= (RecyclerView)findViewById(R.id.recyclerView);
         recyclerContactos.setLayoutManager(new LinearLayoutManager(this));
-
-
 
         llenarContactos();
 
@@ -44,7 +46,6 @@ public class Contactos extends AppCompatActivity {
 
 
     }
-
     private void llenarContactos() {
 
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this,"administracion",null,1);//NOMBRE DE ADMINISTRADOR
@@ -60,6 +61,7 @@ public class Contactos extends AppCompatActivity {
             BaseDeDatos.close();
         }
     }
+
     public void ir(View view){
         Intent i = new Intent(this,AgregarProducto.class);
         startActivity(i);
