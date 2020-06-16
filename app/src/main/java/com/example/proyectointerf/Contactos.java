@@ -4,8 +4,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,7 +28,7 @@ public class Contactos extends AppCompatActivity {
         setContentView(R.layout.activity_contactos);
 
         //Esconder barra superior
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
 
         listaContactos = new ArrayList<>();
         recyclerContactos= (RecyclerView)findViewById(R.id.recyclerView);
@@ -43,7 +47,6 @@ public class Contactos extends AppCompatActivity {
 
     private void llenarContactos() {
 
-
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this,"administracion",null,1);//NOMBRE DE ADMINISTRADOR
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
 
@@ -60,6 +63,38 @@ public class Contactos extends AppCompatActivity {
     public void ir(View view){
         Intent i = new Intent(this,AgregarProducto.class);
         startActivity(i);
+        this.finish();
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_contactos, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent intent;
+        switch (item.getItemId()){
+            case R.id.item_lista:
+                intent = new Intent(this,Productos.class);
+                startActivity(intent);
+                this.finish();
+                return true;
+            case R.id.item_add:
+                intent = new Intent(this,AgregarProducto.class);
+                startActivity(intent);
+                this.finish();
+                return true;
+            case R.id.item_perfil:
+                intent = new Intent(this,Perfil.class);
+                startActivity(intent);
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
 
 }

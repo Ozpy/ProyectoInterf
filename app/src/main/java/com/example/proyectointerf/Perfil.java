@@ -44,7 +44,7 @@ public class Perfil extends AppCompatActivity  {
         setContentView(R.layout.activity_perfil);
 
         //Esconder barra superior
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -105,6 +105,7 @@ public class Perfil extends AppCompatActivity  {
         BaseDeDatos.insert("usuario",null,registro); //NOMBRE DE BASE DE DATOS
         BaseDeDatos.close();
         Toast.makeText(this, "Registrado Correctamente", Toast.LENGTH_SHORT).show();
+        ir();
     }
 
     private void leer(){
@@ -138,9 +139,10 @@ public class Perfil extends AppCompatActivity  {
         }
     }
 
-    public void ir(View view){
+    public void ir(){
         Intent i = new Intent(this,Contactos.class);
         startActivity(i);
+        this.finish();
     }
 
     private void ReiniciarTabla(){
@@ -165,14 +167,17 @@ public class Perfil extends AppCompatActivity  {
             case R.id.item_lista:
                  intent = new Intent(this,Productos.class);
                 startActivity(intent);
+                this.finish();
                 return true;
             case R.id.item_add:
                 intent = new Intent(this,AgregarProducto.class);
                 startActivity(intent);
+                this.finish();
                 return true;
             case R.id.item_contactos:
                 intent = new Intent(this,Contactos.class);
                 startActivity(intent);
+                this.finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
