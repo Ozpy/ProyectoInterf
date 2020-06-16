@@ -22,6 +22,7 @@ public class AdapterMensajes extends RecyclerView.Adapter<HolderMensaje>{
 
     public void addMensaje(Mensaje m){
         listMnesaje.add(m);
+        notifyItemInserted(listMnesaje.size());
     }
 
     @NonNull
