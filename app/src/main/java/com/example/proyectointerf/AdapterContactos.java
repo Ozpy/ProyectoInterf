@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+
 public class AdapterContactos extends RecyclerView.Adapter<AdapterContactos.ViewHolderContactos> {
     ArrayList<ContactoVo> listaContactos;
 
