@@ -39,15 +39,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-
         FirebaseUser user = mAuth.getCurrentUser();
         if(user!=null){
             Intent intent = new Intent(getApplicationContext(),Perfil.class);
             startActivity(intent);
         }
-
-
     }
 
     @Override

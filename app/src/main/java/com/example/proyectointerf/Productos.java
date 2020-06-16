@@ -30,7 +30,6 @@ public class Productos extends AppCompatActivity {
 
         AdapterProductos adapterProductos=new AdapterProductos(listaProductos);
         recyclerProductos.setAdapter(adapterProductos);
-
     }
     private void llenarProductos() {
 
@@ -42,6 +41,6 @@ public class Productos extends AppCompatActivity {
     public void ir (View view){
         Intent intent = new Intent(this, Chat.class);
         startActivity(intent);
+        this.finish();
     }
-
 }
