@@ -129,7 +129,7 @@
                 android:layout_weight="1"
 
                 android:backgroundTint="#aeefec"
-                android:onClick="registrar"
+                android:onClick="ir"
                 android:text="@string/PbtnActualizar" />
 
 
