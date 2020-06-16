@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -24,6 +25,8 @@ public class Chat extends AppCompatActivity {
     RecyclerView rvMensajes;
     EditText txtMensaje;
     ImageButton btnEnviar;
+
+    AdapterMensajes adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +40,18 @@ public class Chat extends AppCompatActivity {
         rvMensajes=(RecyclerView)findViewById(R.id.rvMensajes);
         txtMensaje=(EditText)findViewById(R.id.etMensaje);
         btnEnviar=(ImageButton)findViewById(R.id.ibEnviar);
+
+        adapter = new AdapterMensajes(this);
+        LinearLayoutManager l = new LinearLayoutManager(this);
+        rvMensajes.setLayoutManager(l);
+        rvMensajes.setAdapter(adapter);
+
+        btnEnviar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+              adapter.addMensaje(new Mensaje(txtMensaje.getText().toString(),nombre.getText().toString(),"","1","00:00"));
+            }
+        });
     }
 
     @Override
