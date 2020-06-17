@@ -35,6 +35,7 @@ public class Contactos extends AppCompatActivity {
     DatabaseReference mRootReference;    //Agrgar para la base de datos
     AdapterContactos adapterContactos;
     GoogleSignInAccount signInAccount ;
+    MenuItem menuItemAdd;
     int tipo=0;
 
     @Override
@@ -62,7 +63,6 @@ public class Contactos extends AppCompatActivity {
         solicitarDatosFirebase();
 
         recyclerContactos.setAdapter(adapterContactos);
-        ComprobarRepetidoSolicitarDatosFirebase();
     }
 
 
@@ -85,7 +85,12 @@ public class Contactos extends AppCompatActivity {
                             String guard;
                             i[0]++;
                             Log.e("rrrrrrrrrrrrrrrrrrrrrrr", ""+i[0]);
-                            agregarCard(nombre,correo);
+                                if(signInAccount.getEmail().equals(correo)){
+                                }else{
+                                    agregarCard(nombre,correo);
+                                }
+
+
                         }
 
                         @Override
@@ -146,11 +151,10 @@ public class Contactos extends AppCompatActivity {
         });
 
     }
-    private void ComprobarRepetidoSolicitarDatosFirebase() {
+    private void ComprobarTipoSolicitarDatosFirebase() {
 
         //TRUE REPETIDO & FALSE NO REPETIDO
         mRootReference.child("Usuario").addValueEventListener(new ValueEventListener() {
-
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -162,16 +166,22 @@ public class Contactos extends AppCompatActivity {
                             UserFirebase user = snapshot.getValue(UserFirebase.class);
                             String nombre = user.getNombre();
                             String correo = user.getCorreo();
-                            String tipo = user.getTipo();
+                            String tipos= user.getTipo();
 
                             Log.e("NombreUsuario:",""+nombre);
                             Log.e("Correo:",""+correo);
 
                             Log.e("Datos:",""+snapshot.getValue());
-                            if(tipo.equals("Cliente")){//0=Cliente,1=Empleado
-                                Toast.makeText(Contactos.this, "Eres un cliente", Toast.LENGTH_SHORT).show();
-                            }else{
-                                Toast.makeText(Contactos.this, "Eres un empleado", Toast.LENGTH_SHORT).show();
+
+                            if(signInAccount.getEmail().equals(correo)){
+                                if(tipos.equals("Cliente")){
+                                tipo=0;
+                                    Toast.makeText(Contactos.this, "Eres cliente", Toast.LENGTH_SHORT).show();
+
+                                }else{
+                                    tipo=1;
+                                    Toast.makeText(Contactos.this, "Eres empleado", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
                         @Override
@@ -180,7 +190,6 @@ public class Contactos extends AppCompatActivity {
                     });
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
@@ -228,6 +237,54 @@ public class Contactos extends AppCompatActivity {
         inflater.inflate(R.menu.menu_contactos, menu);
         return true;
     }
+
+    @Override
+    public boolean onPrepareOptionsMenu(final Menu menu) {
+
+        //TRUE REPETIDO & FALSE NO REPETIDO
+        mRootReference.child("Usuario").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
+
+                    mRootReference.child("Usuario").child(snapshot.getKey()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            UserFirebase user = snapshot.getValue(UserFirebase.class);
+                            String nombre = user.getNombre();
+                            String correo = user.getCorreo();
+                            String tipos= user.getTipo();
+
+                            Log.e("NombreUsuario:",""+nombre);
+                            Log.e("Correo:",""+correo);
+
+                            Log.e("Datos:",""+snapshot.getValue());
+
+                            if(signInAccount.getEmail().equals(correo)){
+                                if(tipos.equals("Cliente")){
+                                    menu.getItem(1).setEnabled(false);
+                                    Toast.makeText(Contactos.this, "Eres cliente", Toast.LENGTH_SHORT).show();
+
+                                }else{
+                                    menu.getItem(1).setEnabled(true);
+                                    Toast.makeText(Contactos.this, "Eres empleado", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Intent intent;
@@ -237,6 +294,7 @@ public class Contactos extends AppCompatActivity {
                 startActivity(intent);
                 this.finish();
                 return true;
+
             case R.id.item_add:
                 intent = new Intent(this,AgregarProducto.class);
                 startActivity(intent);
