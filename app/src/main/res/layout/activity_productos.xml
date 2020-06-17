@@ -54,6 +54,7 @@
         android:layout_marginBottom="24dp"
         android:background="@layout/esquinas_redondeadas"
         android:backgroundTint="#aeefec"
+        android:onClick="ir"
         android:text="@string/enviar"
         android:textColorLink="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"

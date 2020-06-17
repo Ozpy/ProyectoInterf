@@ -75,4 +75,8 @@ public class Productos extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+    public void ir(View view){
+        Intent i= new Intent(this,Chat.class);
+        startActivity(i);
+    }
 }

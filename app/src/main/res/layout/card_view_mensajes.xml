@@ -19,10 +19,12 @@
                 android:layout_height="24sp"
                 android:src="@mipmap/ic_launcher"/>
         </LinearLayout>
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -33,17 +35,20 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Kevin" />
+
                 <TextView
                     android:id="@+id/horaMensaje"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="00:00"/>
+                    android:layout_marginRight="10dp"
+                    android:text="00:00" />
             </LinearLayout>
+
             <TextView
                 android:id="@+id/mensajeMensaje"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hola, Bienvenido"/>
+                android:text="Hola, Bienvenido" />
         </LinearLayout>
     </LinearLayout>
 

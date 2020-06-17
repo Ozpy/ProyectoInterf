@@ -139,8 +139,8 @@ public class Perfil extends AppCompatActivity  {
         datosUsuario.put("calle",calle);
         datosUsuario.put("colonia",colonia);
         datosUsuario.put("codigopostal",codigopost);
+        datosUsuario.put("tipo","Cliente"); //Cliente o Empleado
         datosUsuario.put("foto",foto);
-
         mRootReference.child("Usuario").push().setValue(datosUsuario);
     }
 
