@@ -47,6 +47,15 @@ public class Contactos extends AppCompatActivity {
 
 
         AdapterContactos adapterContactos=new AdapterContactos(listaContactos);
+
+        adapterContactos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent();
+                startActivity(i);
+            }
+        });
+
         recyclerContactos.setAdapter(adapterContactos);
         solicitarDatosFirebase();
     }
