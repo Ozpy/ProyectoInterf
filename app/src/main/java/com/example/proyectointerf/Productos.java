@@ -15,13 +15,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proyectointerf.BD.AdminSQLiteOpenHelper;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 
 public class Productos extends AppCompatActivity {
     ArrayList<Producto> listaProductos;
     RecyclerView recyclerProductos;
-
+    DatabaseReference mRootReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,16 +39,20 @@ public class Productos extends AppCompatActivity {
         AdapterProductos adapterProductos=new AdapterProductos(listaProductos);
         recyclerProductos.setAdapter(adapterProductos);
     }
+
     private void llenarProductos() {
+
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this, "administracion", null, 1);//NOMBRE DE ADMINISTRADOR
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
+
         Cursor fila = BaseDeDatos.rawQuery("select * from producto", null);
         if (fila.moveToFirst()) {
             do {
-                listaProductos.add(new Producto(fila.getString(1), fila.getString(2), R.mipmap.lapiz));
+                listaProductos.add(new Producto("1", "1", R.mipmap.lapiz));
             } while (fila.moveToNext());
             BaseDeDatos.close();
         }
+
     }
 
 

@@ -60,7 +60,10 @@
                 android:layout_margin="25dp"
                 android:layout_weight="1"
                 android:background="@layout/circulo_fondo"
-                android:backgroundTint="#66FF00" />
+                android:backgroundTint="#66FF00"
+                android:fallbackLineSpacing="false"
+                android:hapticFeedbackEnabled="false"
+                android:shadowColor="#070707" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

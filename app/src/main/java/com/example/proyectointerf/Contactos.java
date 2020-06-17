@@ -203,7 +203,6 @@ public class Contactos extends AppCompatActivity {
 
 
         Cursor fila = BaseDeDatos.rawQuery("select * from usuario", null);
-        String guardado;
 
         if(fila.moveToFirst()){
             do {
@@ -217,7 +216,7 @@ public class Contactos extends AppCompatActivity {
     //GENERALES
     private void agregarCard(String nombre, String correo,String estado) {
 
-        listaContactos.add(new ContactoVo(nombre,correo,R.mipmap.usuario, "ok"));
+        listaContactos.add(new ContactoVo(nombre,correo,R.mipmap.usuario, estado));
         recyclerContactos.setAdapter(adapterContactos);
     }
     public void borrarData() {

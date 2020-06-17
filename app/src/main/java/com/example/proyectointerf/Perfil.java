@@ -116,8 +116,6 @@ public class Perfil extends AppCompatActivity {
     //FIREBASE
     public void registrar(View view) {
         leer();
-        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this, "administracion", null, 1);//NOMBRE DE ADMINISTRADOR
-        SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
 
         ContentValues registro = new ContentValues();
         registro.put("id_firebase", id_fire);
@@ -126,20 +124,12 @@ public class Perfil extends AppCompatActivity {
         registro.put("calle", calle);
         registro.put("colonia", colonia);
         registro.put("codigopostal", codigopost);
-        ComprobarRepetidoSolicitarDatosFirebase();
-        if (1 == 0) {
-            //BaseDeDatos.insert("usuario",null,registro); //NOMBRE DE BASE DE DATOS
-            //Toast.makeText(this, "Registrado Correctamente", Toast.LENGTH_SHORT).show();
-        } else {
-        }
-        BaseDeDatos.close();
+
         //EN FIREBASE
         CuentaRegistrada();
 
-
         ir();
     }
-
     private void CuentaRegistrada() {
         //TRUE REPETIDO & FALSE NO REPETIDO                 //INICIO DE FUNCION COMPROBARREPETIDOS
         mRootReference.child("Usuario").addValueEventListener(new ValueEventListener() {
@@ -167,7 +157,6 @@ public class Perfil extends AppCompatActivity {
                                 return;
                             }
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                         }
@@ -186,7 +175,6 @@ public class Perfil extends AppCompatActivity {
             LlenarDatosFirebase();
         }
     }   //FUNCION BASE PARA DETECTAR REPETIDOS
-
     private void LlenarDatosFirebase() {            //En firebase
         Map<String, Object> datosUsuario = new HashMap<>();
 

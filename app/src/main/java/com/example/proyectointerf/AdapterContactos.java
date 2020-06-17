@@ -1,6 +1,8 @@
 package com.example.proyectointerf;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +10,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,10 +38,18 @@ public class AdapterContactos extends RecyclerView.Adapter<AdapterContactos.View
         holder.etiNombre.setText(listaContactos.get(position).getNombre());
         holder.etiEmail.setText(listaContactos.get(position).getEmail());
         holder.foto.setImageResource(listaContactos.get(position).getFoto());
+
         if(listaContactos.get(position).getEstado().equals("ok")){
-            holder.estado.setBackgroundColor(Color.GREEN);
+            holder.estado.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+            Log.e("COLOR:","GREEN");
+            holder.estado.setHighlightColor(Color.GREEN);
         } else if(listaContactos.get(position).getEstado().equals("pendiente")){
-            holder.estado.setBackgroundColor(Color.RED);
+            holder.estado.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+            Log.e("COLOR:","RED");
+        }else{
+            holder.estado.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+            holder.estado.setHighlightColor(Color.BLACK);
+            Log.e("COLOR:","BLACK");
         }
 
     }
