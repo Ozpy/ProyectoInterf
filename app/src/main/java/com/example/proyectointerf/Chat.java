@@ -71,14 +71,8 @@ public class Chat extends AppCompatActivity {
                 Calendar c = Calendar.getInstance();
 
                 String datetime = DateFormat.getDateInstance().format(new Date());
-
                 databaseReference.push().setValue(new Mensaje(txtMensaje.getText().toString(),nombre.getText().toString(),"","1",datetime+"   "+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE)));
                 txtMensaje.setText("");
-
-
-
-
-
             }
         });
 
@@ -159,4 +153,3 @@ public class Chat extends AppCompatActivity {
         startActivity(i);
     }
 }
-//Carole gei
