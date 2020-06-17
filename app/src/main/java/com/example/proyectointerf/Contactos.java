@@ -57,7 +57,8 @@ public class Contactos extends AppCompatActivity {
         adapterContactos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ir();
+                String emailC=listaContactos.get(recyclerContactos.getChildAdapterPosition(v)).getEmail();//.toString()
+                ir(emailC);
             }
         });
         solicitarDatosFirebase();
@@ -175,7 +176,7 @@ public class Contactos extends AppCompatActivity {
 
                             if(signInAccount.getEmail().equals(correo)){
                                 if(tipos.equals("Cliente")){
-                                    tipo=0;
+                                tipo=0;
                                     Toast.makeText(Contactos.this, "Eres cliente", Toast.LENGTH_SHORT).show();
 
                                 }else{
@@ -219,16 +220,15 @@ public class Contactos extends AppCompatActivity {
         listaContactos.add(new ContactoVo(nombre,correo,R.mipmap.usuario));
         recyclerContactos.setAdapter(adapterContactos);
     }
-    public void ir(View view){
-        Intent i = new Intent(this,AgregarProducto.class);
-        startActivity(i);
-        this.finish();
-    }
-    private void ir() {
+
+    private void ir(String emailC) {
+        Bundle parametro = new Bundle();
+        parametro.putString("emailC", emailC);
         Intent i;
         i = new Intent(this, Chat.class);
-        i.putExtra("etiqueta",i);
+        i.putExtras(parametro);
         startActivity(i);
+        this.finish();
     }
 
     //MENU
@@ -238,13 +238,12 @@ public class Contactos extends AppCompatActivity {
         inflater.inflate(R.menu.menu_contactos, menu);
         return true;
     }
+
     @Override
     public boolean onPrepareOptionsMenu(final Menu menu) {
 
         //TRUE REPETIDO & FALSE NO REPETIDO
-        tipo=0;                                                //INICIO DE FUNCION
         mRootReference.child("Usuario").addValueEventListener(new ValueEventListener() {
-
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -260,17 +259,17 @@ public class Contactos extends AppCompatActivity {
 
                             Log.e("NombreUsuario:",""+nombre);
                             Log.e("Correo:",""+correo);
+
                             Log.e("Datos:",""+snapshot.getValue());
 
                             if(signInAccount.getEmail().equals(correo)){
                                 if(tipos.equals("Cliente")){
-                                    tipo=0;
                                     menu.getItem(1).setEnabled(false);
-                                    Toast.makeText(Contactos.this, "Cliente", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Contactos.this, "Eres cliente", Toast.LENGTH_SHORT).show();
+
                                 }else{
-                                    tipo=1;
                                     menu.getItem(1).setEnabled(true);
-                                    Toast.makeText(Contactos.this, "Empleado", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Contactos.this, "Eres empleado", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
@@ -280,22 +279,13 @@ public class Contactos extends AppCompatActivity {
                     });
                 }
             }
-
-
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
-        if (tipo==0){
-
-
-        }else if(tipo==1){
-
-
-        }
-        //FIN DE LA FUNCION BASE
 
         return true;
-    } //MODIFICAR MENU SEGUN CLIENTE O EMPLEADO
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Intent intent;
