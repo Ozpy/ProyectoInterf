@@ -39,6 +39,7 @@ import java.util.Map;
 public class Perfil extends AppCompatActivity  {
 
     private GoogleSignInClient mGoogleSignInClient;
+    GoogleSignInAccount signInAccount;
 
     private DatabaseReference mRootReference;    //Agrgar para la base de datos
 
@@ -49,29 +50,30 @@ public class Perfil extends AppCompatActivity  {
     Button logout;
     ImageView perfilImagen;
     TextView tv;
+    int repetido=0;
     int i=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
-
+        i=0;//Contador de pruevas
 
         //getSupportActionBar().hide();    //Esconder barra superior
 
-
+        //FIREBASE INSTANCIA
         mRootReference= FirebaseDatabase.getInstance().getReference(); //Hace referencia a la base de datos en el nodo principal
 
+
+        //Datos de cuenta actual
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        signInAccount = GoogleSignIn.getLastSignedInAccount(this);
 
-
-        GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
-
+        //Instanciar variables
         logout = findViewById(R.id.logout);
         name = findViewById(R.id.name);
         mail = findViewById(R.id.mail);
@@ -80,38 +82,20 @@ public class Perfil extends AppCompatActivity  {
         et_codigopost=findViewById(R.id.edt_pc);
         et_colonia=findViewById(R.id.edt_col);
 
-        if(signInAccount != null){
-            Uri personPhoto = signInAccount.getPhotoUrl();
 
-            name.setText(signInAccount.getDisplayName());
-            mail.setText(signInAccount.getEmail());
-            foto=String.valueOf(personPhoto);
-            Glide.with(this).load(foto).into(perfilImagen);      //MANDAR FOTO
-        }
-
-
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mGoogleSignInClient.signOut();
-                FirebaseAuth.getInstance().signOut();
-
-                Toast.makeText(Perfil.this, "You are logged out", Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(Perfil.this,MainActivity.class);
-                startActivity(i);
-            }
-        });
+        ComprobarRepetidoSolicitarDatosFirebase();
+        RecuperarDatosCuenta();
+        SignOut();
 
     }
 
+    //FIREBASE
     public void registrar (View view) {
         leer();
-        Toast.makeText(this, "registrar", Toast.LENGTH_SHORT).show();
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this,"administracion",null,1);//NOMBRE DE ADMINISTRADOR
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
 
         ContentValues registro = new ContentValues();
-
         registro.put("id_firebase",id_fire);
         registro.put("nombre",nombre);
         registro.put("correo",correo);
@@ -119,18 +103,21 @@ public class Perfil extends AppCompatActivity  {
         registro.put("colonia",colonia);
         registro.put("codigopostal",codigopost);
 
-        BaseDeDatos.insert("usuario",null,registro); //NOMBRE DE BASE DE DATOS
+        if (1==0){
+            //BaseDeDatos.insert("usuario",null,registro); //NOMBRE DE BASE DE DATOS
+            //Toast.makeText(this, "Registrado Correctamente", Toast.LENGTH_SHORT).show();
+        }else{
+        }
         BaseDeDatos.close();
-        Toast.makeText(this, "Registrado Correctamente", Toast.LENGTH_SHORT).show();
-
-
         //EN FIREBASE
-        LlenarDatosFirebase();
-
+        ComprobarRepetidoSolicitarDatosFirebase();
+        if (repetido==1){
+            Toast.makeText(this, "La cuenta ya habia sido registrada con aterioridad", Toast.LENGTH_SHORT).show();
+        }else if(repetido==0){
+            LlenarDatosFirebase();
+        }
         ir();
-
     }
-
     private void LlenarDatosFirebase() {            //En firebase
         Map<String,Object> datosUsuario = new HashMap<>();
 
@@ -142,8 +129,48 @@ public class Perfil extends AppCompatActivity  {
         datosUsuario.put("tipo","Cliente"); //Cliente o Empleado
         datosUsuario.put("foto",foto);
         mRootReference.child("Usuario").push().setValue(datosUsuario);
+        Toast.makeText(this, "Registrado correctamente", Toast.LENGTH_SHORT).show();
     }
+    private void ComprobarRepetidoSolicitarDatosFirebase() {
 
+        //TRUE REPETIDO & FALSE NO REPETIDO
+        mRootReference.child("Usuario").addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
+
+                    mRootReference.child("Usuario").child(snapshot.getKey()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            UserFirebase user = snapshot.getValue(UserFirebase.class);
+                            String nombre = user.getNombre();
+                            String correo = user.getCorreo();
+
+
+                            Log.e("NombreUsuario:",""+nombre);
+                            Log.e("Correo:",""+correo);
+
+                            Log.e("Datos:",""+snapshot.getValue());
+                            if(signInAccount.getEmail().equals(correo)){
+                                repetido=1;
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    } //Cambia el valor e la variable globar repetido a 1 si esta repetido el e-mail
+
+
+    //GENERALES
     private void leer(){
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -160,6 +187,36 @@ public class Perfil extends AppCompatActivity  {
         codigopost=et_codigopost.getText().toString();
 
     }
+    public void ir(){
+        Intent i = new Intent(this,Contactos.class);
+        startActivity(i);
+        this.finish();
+    }
+    private void SignOut() {
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {                        //SIGN OUT
+                mGoogleSignInClient.signOut();
+                FirebaseAuth.getInstance().signOut();
+
+                Toast.makeText(Perfil.this, "You are logged out", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(Perfil.this, MainActivity.class);
+                startActivity(i);
+            }
+        });
+    }
+    private void RecuperarDatosCuenta() {
+        if(signInAccount != null){
+            Uri personPhoto = signInAccount.getPhotoUrl();
+
+            name.setText(signInAccount.getDisplayName());
+            mail.setText(signInAccount.getEmail());
+            foto=String.valueOf(personPhoto);
+            Glide.with(this).load(foto).into(perfilImagen);      //MANDAR FOTO
+        }
+    }   //DE CUENTA ACTUAL
+
+    //DE PRUEBA
     public void mostrarDatos(View view){
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this,"administracion",null,1);//NOMBRE DE ADMINISTRADOR
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
@@ -174,13 +231,6 @@ public class Perfil extends AppCompatActivity  {
             BaseDeDatos.close();
         }
     }
-
-    public void ir(){
-        Intent i = new Intent(this,Contactos.class);
-        startActivity(i);
-        this.finish();
-    }
-
     private void ReiniciarTabla(){
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this,"administracion",null,1);//NOMBRE DE ADMINISTRADOR
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
@@ -189,13 +239,13 @@ public class Perfil extends AppCompatActivity  {
         BaseDeDatos.close();
     }
 
+    //MENU
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_perfil, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Intent intent;
@@ -218,48 +268,5 @@ public class Perfil extends AppCompatActivity  {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-    private void solicitarDatosFirebase() {
-        mRootReference.child("Usuario").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
-
-                    mRootReference.child("Usuario").child(snapshot.getKey()).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            UserFirebase user = snapshot.getValue(UserFirebase.class);
-                            String nombre = user.getNombre();
-                            String apellido = user.getCorreo();
-                            String telefono = user.getCalle();
-                            String direccion = user.getCodigopost();
-
-                            Log.e("NombreUsuario:",""+nombre);
-                            Log.e("ApellidoUsuario:",""+apellido);
-                            Log.e("TelefonoUsuario:",""+telefono);
-                            Log.e("DireccionUsuario:",""+direccion);
-                            Log.e("Datos:",""+snapshot.getValue());
-                            Toast.makeText(Perfil.this, ""+nombre, Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-
-                    });
-
-
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 }

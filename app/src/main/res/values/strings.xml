@@ -11,7 +11,7 @@
     <string name="col_d">Colonia</string>
     <string name="pc_d">Código Postal</string>
 
-    <string name="PbtnActualizar">Actualizar</string>
+    <string name="PbtnActualizar">Registrar</string>
 
     <string name="nombre">Nombre de Usuario</string>
     <string name="enviar">Enviar</string>

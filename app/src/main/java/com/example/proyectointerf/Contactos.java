@@ -89,10 +89,7 @@ public class Contactos extends AppCompatActivity {
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
                         }
-
-
                     });
                     recyclerContactos.setAdapter(adapterContactos);
                 }
