@@ -148,7 +148,7 @@ public class Chat extends AppCompatActivity {
                     Calendar c = Calendar.getInstance();
                     String datetime = DateFormat.getDateInstance().format(new Date());
                 Uri u = taskSnapshot.getUploadSessionUri();
-                Mensaje m = new Mensaje("Kevin ha enviado una foto",nombre.getText().toString(),"","2",datetime+"   "+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE));
+                Mensaje m = new Mensaje("Kevin ha enviado una foto",u.toString(),nombre.getText().toString(),"","2",datetime+"   "+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE));
                 databaseReference.push().setValue(m);
                 }
             });
