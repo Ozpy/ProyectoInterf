@@ -1,6 +1,7 @@
 package com.example.proyectointerf;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,11 +17,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -34,13 +39,15 @@ public class Chat extends AppCompatActivity {
     TextView nombre;
     RecyclerView rvMensajes;
     EditText txtMensaje;
-    ImageButton btnEnviar;
+    ImageButton btnEnviar,btnEnviarFoto;
 
     AdapterMensajes adapter;
 
     FirebaseDatabase database;
     DatabaseReference databaseReference;
-
+    FirebaseStorage storage;
+    StorageReference storageReference;
+    static final int PHOTO_SEND = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +62,12 @@ public class Chat extends AppCompatActivity {
         rvMensajes=(RecyclerView)findViewById(R.id.rvMensajes);
         txtMensaje=(EditText)findViewById(R.id.etMensaje);
         btnEnviar=(ImageButton)findViewById(R.id.ibEnviar);
+        btnEnviarFoto=(ImageButton)findViewById(R.id.ibEnviarFoto);
 
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference("chat"); // Sala de Chat (Nombre)
+        storage = FirebaseStorage.getInstance();
+
 
         adapter = new AdapterMensajes(this);
         LinearLayoutManager l = new LinearLayoutManager(this);
@@ -71,17 +81,20 @@ public class Chat extends AppCompatActivity {
                 Calendar c = Calendar.getInstance();
 
                 String datetime = DateFormat.getDateInstance().format(new Date());
-
                 databaseReference.push().setValue(new Mensaje(txtMensaje.getText().toString(),nombre.getText().toString(),"","1",datetime+"   "+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE)));
                 txtMensaje.setText("");
-
-
-
-
-
             }
         });
 
+        btnEnviarFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.setType("image/jpeg");
+                i.putExtra(Intent.EXTRA_LOCAL_ONLY,true);
+                startActivityForResult(Intent.createChooser(i,"Selecciona una foto"),PHOTO_SEND);
+            }
+        });
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
@@ -123,6 +136,26 @@ public class Chat extends AppCompatActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PHOTO_SEND && resultCode == RESULT_OK){
+            Uri u = data.getData();
+            storageReference = storage.getReference("imagenes_chat");//Imágenes de chat
+            final StorageReference fotoReferencia = storageReference.child(u.getLastPathSegment());
+            fotoReferencia.putFile(u).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Calendar c = Calendar.getInstance();
+                    String datetime = DateFormat.getDateInstance().format(new Date());
+                Uri u = taskSnapshot.getUploadSessionUri();
+                Mensaje m = new Mensaje("Kevin ha enviado una foto",nombre.getText().toString(),"","2",datetime+"   "+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE));
+                databaseReference.push().setValue(m);
+                }
+            });
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_contactos,menu );
@@ -159,4 +192,3 @@ public class Chat extends AppCompatActivity {
         startActivity(i);
     }
 }
-//Carole gei
