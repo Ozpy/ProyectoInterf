@@ -1,10 +1,18 @@
 package com.example.proyectointerf;
 
 public class UserFirebase {
-    String nombre,correo,calle,colonia,foto,codigopost,tipo;
+    String nombre,correo,calle,colonia,foto,codigopost,tipo,estado;
 
     public UserFirebase() {
 
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     public String getTipo() {

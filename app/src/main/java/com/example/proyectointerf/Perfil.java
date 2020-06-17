@@ -46,7 +46,7 @@ public class Perfil extends AppCompatActivity {
     int tipo = 0;
     TextView name, mail;
     EditText et_calle, et_colonia, et_codigopost;
-    String id_fire, nombre, correo, calle, colonia, foto, codigopost;
+    String id_fire, nombre, correo, calle, colonia, foto, codigopost,estado;
     Button logout;
     ImageView perfilImagen;
     TextView tv;
@@ -146,6 +146,7 @@ public class Perfil extends AppCompatActivity {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 repetido = 0;
                 for (final DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
@@ -197,6 +198,7 @@ public class Perfil extends AppCompatActivity {
         datosUsuario.put("tipo", "Cliente"); //Cliente o Empleado
         datosUsuario.put("estado", "ok");//ok,pendiente
         datosUsuario.put("foto", foto);
+
         mRootReference.child("Usuario").push().setValue(datosUsuario);
         Toast.makeText(this, "Registrado correctamente", Toast.LENGTH_SHORT).show();
     }
@@ -221,8 +223,8 @@ public class Perfil extends AppCompatActivity {
 
                             Log.e("NombreUsuario:", "" + nombre);
                             Log.e("Correo:", "" + correo);
-
                             Log.e("Datos:", "" + snapshot.getValue());
+
                             if (signInAccount.getEmail().equals(correo)) {
                                 Toast.makeText(Perfil.this, "REPETIDO", Toast.LENGTH_SHORT).show();
                                 repetido = 1;
@@ -286,7 +288,6 @@ public class Perfil extends AppCompatActivity {
     private void RecuperarDatosCuenta() {
         if (signInAccount != null) {
             Uri personPhoto = signInAccount.getPhotoUrl();
-
             name.setText(signInAccount.getDisplayName());
             mail.setText(signInAccount.getEmail());
             foto = String.valueOf(personPhoto);

@@ -74,6 +74,7 @@ public class Contactos extends AppCompatActivity {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                borrarData();
                 final int[] i = {0};
                 for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
                     mRootReference.child("Usuario").child(snapshot.getKey()).addValueEventListener(new ValueEventListener() {
@@ -82,16 +83,14 @@ public class Contactos extends AppCompatActivity {
                             user = snapshot.getValue(UserFirebase.class);
                             String nombre = user.getNombre();
                             String correo = user.getCorreo();
-                            String direccion = user.getCalle();
+                            String estado = user.getEstado();
                             String guard;
                             i[0]++;
                             Log.e("rrrrrrrrrrrrrrrrrrrrrrr", ""+i[0]);
                                 if(signInAccount.getEmail().equals(correo)){
                                 }else{
-                                    agregarCard(nombre,correo);
+                                    agregarCard(nombre,correo,estado);
                                 }
-
-
                         }
 
                         @Override
@@ -107,7 +106,7 @@ public class Contactos extends AppCompatActivity {
 
             }
         });
-    }
+    } //AGREGA CARD
     private void verDatosFirebase(){
         //DatabaseReference mRootReference;    //Agrgar para la base de datos
         mRootReference = FirebaseDatabase.getInstance().getReference();
@@ -216,11 +215,15 @@ public class Contactos extends AppCompatActivity {
 
 
     //GENERALES
-    private void agregarCard(String nombre, String correo) {
+    private void agregarCard(String nombre, String correo,String estado) {
+
         listaContactos.add(new ContactoVo(nombre,correo,R.mipmap.usuario));
         recyclerContactos.setAdapter(adapterContactos);
     }
-
+    public void borrarData() {
+        listaContactos.clear(); //Borras la data con la que llenas el recyclerview
+        adapterContactos.notifyDataSetChanged(); //le notificas al adaptador que no hay nada para llenar la vista
+    }
     private void ir(String emailC) {
         Bundle parametro = new Bundle();
         parametro.putString("emailC", emailC);
