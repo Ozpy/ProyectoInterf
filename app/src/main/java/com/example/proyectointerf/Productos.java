@@ -1,6 +1,8 @@
 package com.example.proyectointerf;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.proyectointerf.BD.AdminSQLiteOpenHelper;
 
 import java.util.ArrayList;
 
@@ -35,11 +39,15 @@ public class Productos extends AppCompatActivity {
         recyclerProductos.setAdapter(adapterProductos);
     }
     private void llenarProductos() {
-
-        listaProductos.add(new Producto("Lapiz", "Lapiz 2B de madera mirado",R.mipmap.lapiz));
-        listaProductos.add(new Producto("Pluma", "Pluma negra",R.mipmap.lapiz));
-        listaProductos.add(new Producto("Cuaderno", "Cuaderno profesional cuadro chico",R.mipmap.lapiz));
-        listaProductos.add(new Producto("Borrador", "Borrador de migajon",R.mipmap.lapiz));
+        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this, "administracion", null, 1);//NOMBRE DE ADMINISTRADOR
+        SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
+        Cursor fila = BaseDeDatos.rawQuery("select * from producto", null);
+        if (fila.moveToFirst()) {
+            do {
+                listaProductos.add(new Producto(fila.getString(0), fila.getString(1), R.mipmap.lapiz));
+            } while (fila.moveToNext());
+            BaseDeDatos.close();
+        }
     }
 
 
