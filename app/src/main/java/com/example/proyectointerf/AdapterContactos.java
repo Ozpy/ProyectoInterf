@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 
-public class AdapterContactos extends RecyclerView.Adapter<AdapterContactos.ViewHolderContactos> {
+public class AdapterContactos extends RecyclerView.Adapter<AdapterContactos.ViewHolderContactos>
+        implements  View.OnClickListener{
     ArrayList<ContactoVo> listaContactos;
+    private View.OnClickListener listener;
 
     public AdapterContactos(ArrayList<ContactoVo> listaContactos) {
         this.listaContactos = listaContactos;
@@ -23,6 +25,7 @@ public class AdapterContactos extends RecyclerView.Adapter<AdapterContactos.View
     @Override
     public ViewHolderContactos onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_contactos,null,false);
+        view.setOnClickListener(this);
         return new ViewHolderContactos(view);
     }
 
@@ -38,9 +41,21 @@ public class AdapterContactos extends RecyclerView.Adapter<AdapterContactos.View
         return listaContactos.size();
     }
 
+    public void setOnClickListener(View.OnClickListener listener){
+        this.listener=listener;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(listener!=null){
+            listener.onClick(v);
+        }
+
+    }
+
     public class ViewHolderContactos extends RecyclerView.ViewHolder {
         TextView etiNombre,etiEmail;
-            ImageView foto;
+        ImageView foto;
         public ViewHolderContactos(@NonNull View itemView) {
             super(itemView);
             etiNombre=(TextView)itemView.findViewById(R.id.tvNombre);

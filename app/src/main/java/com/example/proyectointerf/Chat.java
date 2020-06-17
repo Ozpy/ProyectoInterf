@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -15,6 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -49,7 +52,12 @@ public class Chat extends AppCompatActivity {
         btnEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              adapter.addMensaje(new Mensaje(txtMensaje.getText().toString(),nombre.getText().toString(),"","1","00:00"));
+                Calendar c = Calendar.getInstance();
+
+               String datetime = DateFormat.getDateInstance().format(new Date());
+
+              adapter.addMensaje(new Mensaje(txtMensaje.getText().toString(),nombre.getText().toString(),"","1",datetime+"   "+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE)));
+              txtMensaje.setText("");
             }
         });
     }

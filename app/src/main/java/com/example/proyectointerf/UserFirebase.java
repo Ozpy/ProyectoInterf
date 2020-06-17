@@ -1,26 +1,11 @@
 package com.example.proyectointerf;
 
 public class UserFirebase {
-    String id_local,id_fire,nombre,correo,calle,colonia,foto,codigopost;
+    String nombre,correo,calle,colonia,foto,codigopost;
 
     public UserFirebase() {
     }
 
-    public String getId_local() {
-        return id_local;
-    }
-
-    public void setId_local(String id_local) {
-        this.id_local = id_local;
-    }
-
-    public String getId_fire() {
-        return id_fire;
-    }
-
-    public void setId_fire(String id_fire) {
-        this.id_fire = id_fire;
-    }
 
     public String getNombre() {
         return nombre;

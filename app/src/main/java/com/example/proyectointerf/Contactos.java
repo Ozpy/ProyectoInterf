@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,7 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proyectointerf.BD.AdminSQLiteOpenHelper;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -23,9 +28,9 @@ public class Contactos extends AppCompatActivity {
 
     ArrayList<ContactoVo> listaContactos;
     RecyclerView recyclerContactos;
-
-    private DatabaseReference mRootReference;    //Agrgar para la base de datos
-
+    UserFirebase user;
+    DatabaseReference mRootReference;    //Agrgar para la base de datos
+    AdapterContactos adapterContactos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +39,67 @@ public class Contactos extends AppCompatActivity {
         //Esconder barra superior
         //getSupportActionBar().hide();
 
+        mRootReference = FirebaseDatabase.getInstance().getReference(); //Hace referencia a la base de datos en el nodo principal
+
         listaContactos = new ArrayList<>();
         recyclerContactos= (RecyclerView)findViewById(R.id.recyclerView);
         recyclerContactos.setLayoutManager(new LinearLayoutManager(this));
 
-        llenarContactos();
+        adapterContactos=new AdapterContactos(listaContactos);
 
+        adapterContactos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ir();
+            }
+
+
+        });
+        solicitarDatosFirebase();
+
+        recyclerContactos.setAdapter(adapterContactos);
+
+    }
+    private void ir() {
+        Intent i;
+        i = new Intent(this, Chat.class);
+        startActivity(i);
+    }
+    private void solicitarDatosFirebase() {
+        mRootReference.child("Usuario").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final int[] i = {0};
+                for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    mRootReference.child("Usuario").child(snapshot.getKey()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            user = snapshot.getValue(UserFirebase.class);
+                            String nombre = user.getNombre();
+                            String correo = user.getCorreo();
+                            String direccion = user.getCalle();
+                            String guard;
+                            i[0]++;
+                            Log.e("rrrrrrrrrrrrrrrrrrrrrrr", ""+i[0]);
+                            agregarCard(nombre,correo);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+
+
+                    });
+                    recyclerContactos.setAdapter(adapterContactos);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void llenarContactos() {
@@ -95,5 +155,10 @@ public class Contactos extends AppCompatActivity {
         }
 
     }
+    private void agregarCard(String nombre, String correo) {
+        listaContactos.add(new ContactoVo(nombre,correo,R.mipmap.usuario));
+        recyclerContactos.setAdapter(adapterContactos);
+    }
 
 }
+
