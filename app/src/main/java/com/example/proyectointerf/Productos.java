@@ -22,7 +22,6 @@ public class Productos extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_productos);
-
         //Esconder barra superior
         getSupportActionBar().hide();
 

@@ -57,7 +57,8 @@ public class Contactos extends AppCompatActivity {
         adapterContactos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ir();
+                String emailC=listaContactos.get(recyclerContactos.getChildAdapterPosition(v)).getEmail();//.toString()
+                ir(emailC);
             }
         });
         solicitarDatosFirebase();
@@ -219,15 +220,15 @@ public class Contactos extends AppCompatActivity {
         listaContactos.add(new ContactoVo(nombre,correo,R.mipmap.usuario));
         recyclerContactos.setAdapter(adapterContactos);
     }
-    public void ir(View view){
-        Intent i = new Intent(this,AgregarProducto.class);
-        startActivity(i);
-        this.finish();
-    }
-    private void ir() {
+
+    private void ir(String emailC) {
+        Bundle parametro = new Bundle();
+        parametro.putString("emailC", emailC);
         Intent i;
         i = new Intent(this, Chat.class);
+        i.putExtras(parametro);
         startActivity(i);
+        this.finish();
     }
 
     //MENU
