@@ -207,7 +207,7 @@ public class Contactos extends AppCompatActivity {
 
         if(fila.moveToFirst()){
             do {
-                listaContactos.add(new ContactoVo(fila.getString(1),fila.getString(2),R.mipmap.usuario));
+       //         listaContactos.add(new ContactoVo(fila.getString(1),fila.getString(2),R.mipmap.usuario));
             }while (fila.moveToNext());
             BaseDeDatos.close();
         }
@@ -217,7 +217,7 @@ public class Contactos extends AppCompatActivity {
     //GENERALES
     private void agregarCard(String nombre, String correo,String estado) {
 
-        listaContactos.add(new ContactoVo(nombre,correo,R.mipmap.usuario));
+        listaContactos.add(new ContactoVo(nombre,correo,R.mipmap.usuario, "ok"));
         recyclerContactos.setAdapter(adapterContactos);
     }
     public void borrarData() {

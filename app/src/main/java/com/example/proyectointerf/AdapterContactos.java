@@ -1,11 +1,14 @@
 package com.example.proyectointerf;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,6 +37,12 @@ public class AdapterContactos extends RecyclerView.Adapter<AdapterContactos.View
         holder.etiNombre.setText(listaContactos.get(position).getNombre());
         holder.etiEmail.setText(listaContactos.get(position).getEmail());
         holder.foto.setImageResource(listaContactos.get(position).getFoto());
+        if(listaContactos.get(position).getEstado().equals("ok")){
+            holder.estado.setBackgroundColor(Color.GREEN);
+        } else if(listaContactos.get(position).getEstado().equals("pendiente")){
+            holder.estado.setBackgroundColor(Color.RED);
+        }
+
     }
 
     @Override
@@ -56,11 +65,13 @@ public class AdapterContactos extends RecyclerView.Adapter<AdapterContactos.View
     public class ViewHolderContactos extends RecyclerView.ViewHolder {
         TextView etiNombre,etiEmail;
         ImageView foto;
+        Button estado;
         public ViewHolderContactos(@NonNull View itemView) {
             super(itemView);
             etiNombre=(TextView)itemView.findViewById(R.id.tvNombre);
             etiEmail=(TextView)itemView.findViewById(R.id.tvEmail);
             foto=(ImageView)itemView.findViewById(R.id.foto);
+            estado=(Button)itemView.findViewById(R.id.btEstado);
         }
     }
 }
