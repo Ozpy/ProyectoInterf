@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 
 public class AdapterContactos extends RecyclerView.Adapter<AdapterContactos.ViewHolderContactos>
-                              implements  View.OnClickListener{
+        implements  View.OnClickListener{
     ArrayList<ContactoVo> listaContactos;
     private View.OnClickListener listener;
 
@@ -55,7 +55,7 @@ public class AdapterContactos extends RecyclerView.Adapter<AdapterContactos.View
 
     public class ViewHolderContactos extends RecyclerView.ViewHolder {
         TextView etiNombre,etiEmail;
-            ImageView foto;
+        ImageView foto;
         public ViewHolderContactos(@NonNull View itemView) {
             super(itemView);
             etiNombre=(TextView)itemView.findViewById(R.id.tvNombre);
