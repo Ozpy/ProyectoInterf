@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proyectointerf.BD.AdminSQLiteOpenHelper;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,7 +33,7 @@ public class Contactos extends AppCompatActivity {
     UserFirebase user;
     DatabaseReference mRootReference;    //Agrgar para la base de datos
     AdapterContactos adapterContactos;
-
+    GoogleSignInAccount signInAccount ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +41,7 @@ public class Contactos extends AppCompatActivity {
 
         //Esconder barra superior
         //getSupportActionBar().hide();
-
+        signInAccount = GoogleSignIn.getLastSignedInAccount(this);//Google acount
         mRootReference = FirebaseDatabase.getInstance().getReference(); //Hace referencia a la base de datos en el nodo principal
 
         listaContactos = new ArrayList<>();
@@ -65,7 +67,9 @@ public class Contactos extends AppCompatActivity {
         startActivity(i);
     }
     private void solicitarDatosFirebase() {
+
         mRootReference.child("Usuario").addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 final int[] i = {0};
@@ -99,6 +103,62 @@ public class Contactos extends AppCompatActivity {
 
             }
         });
+    }
+    private void verDatosFirebase(){ {
+        //DatabaseReference mRootReference;    //Agrgar para la base de datos
+        mRootReference = FirebaseDatabase.getInstance().getReference();
+
+        mRootReference.child("Usuario").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final int[] i = {0};
+                for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    mRootReference.child("Usuario").child(snapshot.getKey()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            user = snapshot.getValue(UserFirebase.class);
+                            String nombre = user.getNombre();
+                            String correo = user.getCorreo();
+                            String calle = user.getCalle();
+                            String colonia = user.getColonia();
+                            String codigopost = user.getCodigopost();
+                            String foto = user.getFoto();
+                            i[0]++;
+                            Log.e("\nNombre:", nombre);
+                            Log.e("\nCorreo:", correo);
+                            Log.e("\nCalle:", calle);
+                            Log.e("\nColonia:", colonia);
+                            Log.e("\nCodigoPostal:", codigopost);
+                            Log.e("\nFoto:", foto);
+
+
+                            comprobarEmail(correo);
+                        }
+
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+
+
+                    });
+                    recyclerContactos.setAdapter(adapterContactos);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
+    }
+
+    }
+
+    public boolean comprobarEmail(String correo) {
+        if(correo==signInAccount.getEmail()){
+            return false;
+        }else{
+            return true;
+        }
     }
 
     private void llenarContactos() {
