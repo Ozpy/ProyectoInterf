@@ -59,7 +59,7 @@ public class Perfil extends AppCompatActivity  {
         setContentView(R.layout.activity_perfil);
         i=0;//Contador de pruevas
 
-        //getSupportActionBar().hide();    //Esconder barra superior
+        //getSupportActionBar().hide();             //**Esconder barra superior**
 
         //FIREBASE INSTANCIA
         mRootReference= FirebaseDatabase.getInstance().getReference(); //Hace referencia a la base de datos en el nodo principal

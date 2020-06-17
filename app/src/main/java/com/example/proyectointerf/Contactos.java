@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +35,8 @@ public class Contactos extends AppCompatActivity {
     DatabaseReference mRootReference;    //Agrgar para la base de datos
     AdapterContactos adapterContactos;
     GoogleSignInAccount signInAccount ;
+    int tipo=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,13 +62,11 @@ public class Contactos extends AppCompatActivity {
         solicitarDatosFirebase();
 
         recyclerContactos.setAdapter(adapterContactos);
+        ComprobarRepetidoSolicitarDatosFirebase();
+    }
 
-    }
-    private void ir() {
-        Intent i;
-        i = new Intent(this, Chat.class);
-        startActivity(i);
-    }
+
+    //FIREBASE
     private void solicitarDatosFirebase() {
 
         mRootReference.child("Usuario").addValueEventListener(new ValueEventListener() {
@@ -101,7 +102,7 @@ public class Contactos extends AppCompatActivity {
             }
         });
     }
-    private void verDatosFirebase(){ {
+    private void verDatosFirebase(){
         //DatabaseReference mRootReference;    //Agrgar para la base de datos
         mRootReference = FirebaseDatabase.getInstance().getReference();
 
@@ -127,9 +128,6 @@ public class Contactos extends AppCompatActivity {
                             Log.e("\nColonia:", colonia);
                             Log.e("\nCodigoPostal:", codigopost);
                             Log.e("\nFoto:", foto);
-
-
-                            comprobarEmail(correo);
                         }
 
 
@@ -146,18 +144,49 @@ public class Contactos extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) { }
         });
-    }
 
     }
+    private void ComprobarRepetidoSolicitarDatosFirebase() {
 
-    public boolean comprobarEmail(String correo) {
-        if(correo==signInAccount.getEmail()){
-            return false;
-        }else{
-            return true;
-        }
-    }
+        //TRUE REPETIDO & FALSE NO REPETIDO
+        mRootReference.child("Usuario").addValueEventListener(new ValueEventListener() {
 
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
+
+                    mRootReference.child("Usuario").child(snapshot.getKey()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            UserFirebase user = snapshot.getValue(UserFirebase.class);
+                            String nombre = user.getNombre();
+                            String correo = user.getCorreo();
+                            String tipo = user.getTipo();
+
+                            Log.e("NombreUsuario:",""+nombre);
+                            Log.e("Correo:",""+correo);
+
+                            Log.e("Datos:",""+snapshot.getValue());
+                            if(tipo.equals("Cliente")){//0=Cliente,1=Empleado
+                                Toast.makeText(Contactos.this, "Eres un cliente", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(Contactos.this, "Eres un empleado", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    } //Cambia el valor e la variable globar repetido a 1 si esta repetido el e-mail
+
+    //SQLite
     private void llenarContactos() {
 
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this,"administracion",null,1);//NOMBRE DE ADMINISTRADOR
@@ -175,18 +204,30 @@ public class Contactos extends AppCompatActivity {
         }
     }
 
+
+    //GENERALES
+    private void agregarCard(String nombre, String correo) {
+        listaContactos.add(new ContactoVo(nombre,correo,R.mipmap.usuario));
+        recyclerContactos.setAdapter(adapterContactos);
+    }
     public void ir(View view){
         Intent i = new Intent(this,AgregarProducto.class);
         startActivity(i);
         this.finish();
     }
+    private void ir() {
+        Intent i;
+        i = new Intent(this, Chat.class);
+        startActivity(i);
+    }
+
+    //MENU
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_contactos, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Intent intent;
@@ -211,10 +252,7 @@ public class Contactos extends AppCompatActivity {
         }
 
     }
-    private void agregarCard(String nombre, String correo) {
-        listaContactos.add(new ContactoVo(nombre,correo,R.mipmap.usuario));
-        recyclerContactos.setAdapter(adapterContactos);
-    }
+
 
 }
 
