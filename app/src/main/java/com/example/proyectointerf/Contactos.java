@@ -36,6 +36,7 @@ public class Contactos extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contactos);
+
         //Esconder barra superior
         //getSupportActionBar().hide();
 
@@ -52,8 +53,6 @@ public class Contactos extends AppCompatActivity {
             public void onClick(View v) {
                 ir();
             }
-
-
         });
         solicitarDatosFirebase();
 
