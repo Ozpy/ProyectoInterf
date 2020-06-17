@@ -175,7 +175,7 @@ public class Contactos extends AppCompatActivity {
 
                             if(signInAccount.getEmail().equals(correo)){
                                 if(tipos.equals("Cliente")){
-                                tipo=0;
+                                    tipo=0;
                                     Toast.makeText(Contactos.this, "Eres cliente", Toast.LENGTH_SHORT).show();
 
                                 }else{
@@ -227,6 +227,7 @@ public class Contactos extends AppCompatActivity {
     private void ir() {
         Intent i;
         i = new Intent(this, Chat.class);
+        i.putExtra("etiqueta",i);
         startActivity(i);
     }
 
@@ -237,12 +238,13 @@ public class Contactos extends AppCompatActivity {
         inflater.inflate(R.menu.menu_contactos, menu);
         return true;
     }
-
     @Override
     public boolean onPrepareOptionsMenu(final Menu menu) {
 
         //TRUE REPETIDO & FALSE NO REPETIDO
+        tipo=0;                                                //INICIO DE FUNCION
         mRootReference.child("Usuario").addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -258,17 +260,17 @@ public class Contactos extends AppCompatActivity {
 
                             Log.e("NombreUsuario:",""+nombre);
                             Log.e("Correo:",""+correo);
-
                             Log.e("Datos:",""+snapshot.getValue());
 
                             if(signInAccount.getEmail().equals(correo)){
                                 if(tipos.equals("Cliente")){
+                                    tipo=0;
                                     menu.getItem(1).setEnabled(false);
-                                    Toast.makeText(Contactos.this, "Eres cliente", Toast.LENGTH_SHORT).show();
-
+                                    Toast.makeText(Contactos.this, "Cliente", Toast.LENGTH_SHORT).show();
                                 }else{
+                                    tipo=1;
                                     menu.getItem(1).setEnabled(true);
-                                    Toast.makeText(Contactos.this, "Eres empleado", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Contactos.this, "Empleado", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
@@ -278,13 +280,22 @@ public class Contactos extends AppCompatActivity {
                     });
                 }
             }
+
+
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
+        if (tipo==0){
+
+
+        }else if(tipo==1){
+
+
+        }
+        //FIN DE LA FUNCION BASE
 
         return true;
-    }
-
+    } //MODIFICAR MENU SEGUN CLIENTE O EMPLEADO
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Intent intent;
