@@ -44,7 +44,7 @@ public class Productos extends AppCompatActivity {
         Cursor fila = BaseDeDatos.rawQuery("select * from producto", null);
         if (fila.moveToFirst()) {
             do {
-                listaProductos.add(new Producto(fila.getString(0), fila.getString(1), R.mipmap.lapiz));
+                listaProductos.add(new Producto(fila.getString(1), fila.getString(2), R.mipmap.lapiz));
             } while (fila.moveToNext());
             BaseDeDatos.close();
         }
