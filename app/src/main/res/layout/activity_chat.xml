@@ -61,6 +61,12 @@
         android:layout_marginTop="20dp"
         android:orientation="horizontal">
 
+        <ImageButton
+            android:id="@+id/ibEnviarFoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_enviarimagen"
+            android:layout_gravity="center"/>
         <EditText
             android:id="@+id/etMensaje"
             android:layout_width="0dp"
