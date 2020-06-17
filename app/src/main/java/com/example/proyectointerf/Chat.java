@@ -52,6 +52,18 @@ public class Chat extends AppCompatActivity {
               adapter.addMensaje(new Mensaje(txtMensaje.getText().toString(),nombre.getText().toString(),"","1","00:00"));
             }
         });
+
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                setScrollbar();
+            }
+        });
+    }
+
+    public void setScrollbar(){
+        rvMensajes.scrollToPosition(adapter.getItemCount()-1);
     }
 
     @Override
