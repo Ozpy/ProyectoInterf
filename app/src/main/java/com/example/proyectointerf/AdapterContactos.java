@@ -18,6 +18,9 @@ import java.util.ArrayList;
 
 public class AdapterContactos extends RecyclerView.Adapter<AdapterContactos.ViewHolderContactos>
         implements  View.OnClickListener{
+
+    Button btnEstado;
+    View vista;
     ArrayList<ContactoVo> listaContactos;
     private View.OnClickListener listener;
 
@@ -30,6 +33,7 @@ public class AdapterContactos extends RecyclerView.Adapter<AdapterContactos.View
     public ViewHolderContactos onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_contactos,null,false);
         view.setOnClickListener(this);
+        btnEstado= view.findViewById(R.id.btEstado);
         return new ViewHolderContactos(view);
     }
 

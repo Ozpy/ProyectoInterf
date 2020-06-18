@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,7 +37,6 @@ public class Contactos extends AppCompatActivity {
     GoogleSignInAccount signInAccount ;
     MenuItem menuItemAdd;
     int tipo=0;
-    private Button btnestado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +47,6 @@ public class Contactos extends AppCompatActivity {
         //getSupportActionBar().hide();
         signInAccount = GoogleSignIn.getLastSignedInAccount(this);//Google acount
         mRootReference = FirebaseDatabase.getInstance().getReference(); //Hace referencia a la base de datos en el nodo principal
-
-        btnestado=(Button)findViewById(R.id.btEstado);
 
         listaContactos = new ArrayList<>();
         recyclerContactos= (RecyclerView)findViewById(R.id.recyclerView);
