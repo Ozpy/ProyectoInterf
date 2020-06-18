@@ -29,7 +29,6 @@ public class AgregarProducto extends AppCompatActivity {
     EditText etID, etNombre, etDescripcion;
     RadioButton rbLocal, rbImportado;
 
-    String idPr ;
     String nomp ;
     String desc ;
     String nacion;
@@ -44,7 +43,7 @@ public class AgregarProducto extends AppCompatActivity {
         String [] op1 ={"Arte y Manualidades","Escolares y Oficina","Computo y Electrónica","Papeles y Cartulina"};
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,op1);
         spn1.setAdapter(adapter1);
-        etID=(EditText)findViewById(R.id.etID);
+
         etNombre=(EditText)findViewById(R.id.et_nombre_PN);
         etDescripcion=(EditText)findViewById(R.id.et_desc_PN);
         rbLocal=(RadioButton)findViewById(R.id.rb_local);
@@ -57,7 +56,7 @@ public class AgregarProducto extends AppCompatActivity {
 
         LlenarDatos();
 
-        if (!idPr.isEmpty() && !nomp.isEmpty() && !desc.isEmpty() && !nacion.isEmpty()) {
+        if (!nomp.isEmpty() && !desc.isEmpty() && !nacion.isEmpty()) {
             LlenarDatosFirebase();
 
             Toast.makeText(this, "Registrado correctamente", Toast.LENGTH_SHORT).show();
@@ -73,7 +72,6 @@ public class AgregarProducto extends AppCompatActivity {
 
     private void LimpiarCampos() {
         //Limpiar los campos de texto
-        etID.setText("");
         etNombre.setText("");
         etDescripcion.setText("");
     }
@@ -91,7 +89,6 @@ public class AgregarProducto extends AppCompatActivity {
     }
 
     private void LlenarDatos() {
-        idPr = etID.getText().toString();
         nomp = etNombre.getText().toString();
         desc = etDescripcion.getText().toString();
         nacion="";

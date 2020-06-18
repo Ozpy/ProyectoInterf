@@ -47,9 +47,10 @@ public class Perfil extends AppCompatActivity {
     TextView name, mail;
     EditText et_calle, et_colonia, et_codigopost;
     String id_fire, nombre, correo, calle, colonia, foto, codigopost,estado;
-    Button logout;
+    Button logout,btnAvanza;
     ImageView perfilImagen;
     TextView tv;
+
     int repetido = 0;
     int i = 0;
 
@@ -74,6 +75,7 @@ public class Perfil extends AppCompatActivity {
         signInAccount = GoogleSignIn.getLastSignedInAccount(this);
 
         //Instanciar variables
+        btnAvanza=findViewById(R.id.btn_avanza);
         logout = findViewById(R.id.logout);
         name = findViewById(R.id.name);
         mail = findViewById(R.id.mail);
@@ -82,6 +84,7 @@ public class Perfil extends AppCompatActivity {
         et_codigopost = findViewById(R.id.edt_pc);
         et_colonia = findViewById(R.id.edt_col);
 
+        btnAvanza.setEnabled(true);
         et_colonia.setClickable(true);
         et_calle.setClickable(true);
         et_codigopost.setClickable(true);
@@ -101,7 +104,6 @@ public class Perfil extends AppCompatActivity {
         ComprobarRepetidoSolicitarDatosFirebase();
         //TRUE REPETIDO & FALSE NO REPETIDO                 //INICIO DE FUNCION COMPROBARREPETIDOS
         mRootReference.child("Usuario").addValueEventListener(new ValueEventListener() {
-
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -126,6 +128,9 @@ public class Perfil extends AppCompatActivity {
                                 et_colonia.setEnabled(false);
                                 et_codigopost.setEnabled(false);
                                 et_calle.setEnabled(false);
+
+                                btnAvanza.setEnabled(false);
+
                                 return;
                             }
                         }
@@ -334,8 +339,6 @@ public class Perfil extends AppCompatActivity {
         BaseDeDatos.execSQL("create table usuario(id_firebase text primary key ,nombre text,correo text, calle text,colonia text, codigopostal text)");
         BaseDeDatos.close();
     }
-
-
 
     //MENU
 

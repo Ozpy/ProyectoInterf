@@ -32,7 +32,7 @@ public class AdapterProductos extends RecyclerView.Adapter<AdapterProductos.View
     public void onBindViewHolder(@NonNull AdapterProductos.ViewHolderProductos holder, int position) {
         holder.etiNombre.setText(listaProductos.get(position).getNombre());
         holder.etiDescripcion.setText(listaProductos.get(position).getDescripcion());
-        holder.foto.setImageResource(listaProductos.get(position).getFoto());
+        holder.foto.setImageResource(R.mipmap.lapiz);
     }
 
     @Override
