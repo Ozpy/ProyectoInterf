@@ -297,7 +297,7 @@ public class Chat extends AppCompatActivity {
     }
 
     public void ir(){
-        Intent i = new Intent(this,Contactos.class);
+        Intent i = new Intent(this,Perfil.class);
         startActivity(i);
     }
     public void regresar(View view){

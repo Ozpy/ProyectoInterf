@@ -88,7 +88,7 @@ public class Contactos extends AppCompatActivity {
                             String estado = user.getEstado();
                             String guard;
                             i[0]++;
-                            Log.e("rrrrrrrrrrrrrrrrrrrrrrr", ""+i[0]);
+                            Log.e("PRUEBA DE CONTADOR:", ""+i[0]);
                             if(signInAccount.getEmail().equals(correo)){
                             }else{
                                 agregarCard(nombre,correo,estado);
