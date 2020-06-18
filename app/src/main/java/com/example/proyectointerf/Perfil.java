@@ -82,6 +82,9 @@ public class Perfil extends AppCompatActivity {
         et_codigopost = findViewById(R.id.edt_pc);
         et_colonia = findViewById(R.id.edt_col);
 
+        et_colonia.setClickable(true);
+        et_calle.setClickable(true);
+        et_codigopost.setClickable(true);
 
         RecuperarDatosCuenta();
         ComprobarRepetidoSolicitarDatosFirebase();
@@ -90,27 +93,56 @@ public class Perfil extends AppCompatActivity {
         SignOut();
 
     }
-
     private void comprobarRepetido() {
         ComprobarRepetidoSolicitarDatosFirebase();
         Log.e("REPETIDO COMPROBAR", "" + repetido);
     }
-
     private void ModificarEditText() {
         ComprobarRepetidoSolicitarDatosFirebase();
-        if (repetido == 1) {
-            et_colonia.setText(colonia);
-            et_calle.setText(calle);
-            et_codigopost.setText(codigopost);
-            et_colonia.setEnabled(false);
-            et_codigopost.setEnabled(false);
-            et_calle.setEnabled(false);
-        } else {
-            et_colonia.setText("TRUE");
-            et_colonia.setEnabled(true);
-            et_codigopost.setEnabled(true);
-            et_calle.setEnabled(true);
-        }
+        //TRUE REPETIDO & FALSE NO REPETIDO                 //INICIO DE FUNCION COMPROBARREPETIDOS
+        mRootReference.child("Usuario").addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                repetido = 0;
+                for (final DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                    mRootReference.child("Usuario").child(snapshot.getKey()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            UserFirebase user = snapshot.getValue(UserFirebase.class);
+                            String nombre = user.getNombre();
+                            String correo = user.getCorreo();
+
+                            Log.e("NombreUsuario:", "" + nombre);
+                            Log.e("Correo:", "" + correo);
+                            Log.e("Datos:", "" + snapshot.getValue());
+                            if (signInAccount.getEmail().equals(correo)) {
+                                repetido = 1;
+                                et_colonia.setText(user.getColonia());
+                                et_calle.setText(user.getCalle());
+                                et_codigopost.setText(user.getCodigopostal());
+                                et_colonia.setEnabled(false);
+                                et_codigopost.setEnabled(false);
+                                et_calle.setEnabled(false);
+                                return;
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        }); //FIN DE LA FUNCION COMPROBARREPETIDOS
+
+
     }
 
     //FIREBASE
@@ -190,7 +222,6 @@ public class Perfil extends AppCompatActivity {
         mRootReference.child("Usuario").push().setValue(datosUsuario);
         Toast.makeText(this, "Registrado correctamente", Toast.LENGTH_SHORT).show();
     }
-
     private void ComprobarRepetidoSolicitarDatosFirebase() {
         //INICIO DE FUNCION COMPROBARREPETIDOS
         //TRUE REPETIDO & FALSE NO REPETIDO
@@ -214,7 +245,8 @@ public class Perfil extends AppCompatActivity {
                             Log.e("Datos:", "" + snapshot.getValue());
 
                             if (signInAccount.getEmail().equals(correo)) {
-                                Toast.makeText(Perfil.this, "REPETIDO", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Perfil.this, "REPETIDO 111", Toast.LENGTH_SHORT).show();
+
                                 repetido = 1;
                                 Log.e("REPETIDO", "" + repetido);
                                 return;
@@ -252,13 +284,11 @@ public class Perfil extends AppCompatActivity {
         codigopost = et_codigopost.getText().toString();
 
     }
-
     public void ir() {
         Intent i = new Intent(this, Contactos.class);
         startActivity(i);
         this.finish();
     }
-
     private void SignOut() {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -272,7 +302,6 @@ public class Perfil extends AppCompatActivity {
             }
         });
     }
-
     private void RecuperarDatosCuenta() {
         if (signInAccount != null) {
             Uri personPhoto = signInAccount.getPhotoUrl();
@@ -298,7 +327,6 @@ public class Perfil extends AppCompatActivity {
             BaseDeDatos.close();
         }
     }
-
     private void ReiniciarTabla() {
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this, "administracion", null, 1);//NOMBRE DE ADMINISTRADOR
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
@@ -306,6 +334,8 @@ public class Perfil extends AppCompatActivity {
         BaseDeDatos.execSQL("create table usuario(id_firebase text primary key ,nombre text,correo text, calle text,colonia text, codigopostal text)");
         BaseDeDatos.close();
     }
+
+
 
     //MENU
 
@@ -315,7 +345,6 @@ public class Perfil extends AppCompatActivity {
         inflater.inflate(R.menu.menu_perfil, menu);
         return true;
     }
-
     @Override
     public boolean onPrepareOptionsMenu(final Menu menu) {
 
@@ -378,7 +407,6 @@ public class Perfil extends AppCompatActivity {
 
         return true;
     } //MODIFICAR MENU SEGUN CLIENTE O EMPLEADO
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Intent intent;
