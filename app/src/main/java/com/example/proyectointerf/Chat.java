@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -145,36 +146,26 @@ public class Chat extends AppCompatActivity {
     @Override //AQUÍ ES EL BUENO CAROLE
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PHOTO_SEND && resultCode == RESULT_OK){
+        if (requestCode == PHOTO_SEND && resultCode == RESULT_OK) {
             Uri u = data.getData();
+
             storageReference = storage.getReference("imagenes_chat");//Imágenes de chat
-            final StorageReference fotoReferencia = storageReference.child(u.getLastPathSegment());
+            final StorageReference fotoReferencia = storageReference.child("image "+u.getLastPathSegment());
             //  fotoReferencia.putFile(u).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
 
-            fotoReferencia.putFile(u).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            fotoReferencia.putFile(u).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if(!task.isSuccessful()){
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                            throw Objects.requireNonNull(task.getException());
-                        }
-                    }
-                    return fotoReferencia.getDownloadUrl();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    fotoReferencia.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()){
-                        Calendar c = Calendar.getInstance();
-                        String datetime = DateFormat.getDateInstance().format(new Date());
-                        Uri downloadUrl = task.getResult();
-                        Mensaje m = new Mensaje("Kevin te ha enviado una foto",downloadUrl.toString(),nombre.getText().toString(),"","2",datetime+"   "+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE));
-                        databaseReference.push().setValue(m);
-                        Glide.with(Chat.this).load(downloadUrl.toString()).into(fotoPerfil);
-                        Toast.makeText(Chat.this, "Subida exitosamente", Toast.LENGTH_SHORT).show();
-                    }
+                public void onSuccess(Uri uri) {
+                    Calendar c = Calendar.getInstance();
+                    String datetime = DateFormat.getDateInstance().format(new Date());
+                    Mensaje m = new Mensaje(txtMensaje.getText().toString(),nombre.getText().toString(),"","2",datetime+" "+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE));
+                    databaseReference.push().setValue(m);
+
                 }
-            });
+                    });
 
 //                @Override
 //                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -185,8 +176,13 @@ public class Chat extends AppCompatActivity {
 //                databaseReference.push().setValue(m);
 //                }
             //});
+                    // mensajito msj = new mensajito(nombre1.getText().toString(), "Josue ha enviado una foto", ur.getResult().toString(), "2", "", "00:00");
+                    //databaseReference.push().setValue(msj);
+                }
+            });
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
