@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +18,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -35,11 +40,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Chat extends AppCompatActivity {
 
+    private GoogleSignInClient mGoogleSignInClient; //CONSEGUIR DATOS PRINCIPAL
+    GoogleSignInAccount signInAccount;
+
     CircleImageView fotoPerfil;
     TextView nombre;
     RecyclerView rvMensajes;
     EditText txtMensaje;
     ImageButton btnEnviar,btnEnviarFoto;
+
+
+    String nombrePrincipal,correoPrincipal; //DATOS DEL PRINCIPAL
 
     AdapterMensajes adapter;
 
@@ -57,6 +68,14 @@ public class Chat extends AppCompatActivity {
         //Esconder barra superior
         getSupportActionBar().hide();
 
+        //Datos de cuenta actual
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        signInAccount = GoogleSignIn.getLastSignedInAccount(this);
+
         fotoPerfil = (CircleImageView) findViewById(R.id.imagen_perfil);
         nombre = (TextView) findViewById(R.id.textView2);
         rvMensajes=(RecyclerView)findViewById(R.id.rvMensajes);
@@ -67,6 +86,8 @@ public class Chat extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference("chat"); // Sala de Chat (Nombre)
         storage = FirebaseStorage.getInstance();
+
+        RecuperarDatosCuenta();
 
 
         adapter = new AdapterMensajes(this);
@@ -176,6 +197,14 @@ public class Chat extends AppCompatActivity {
         }
     }
 
+    private void RecuperarDatosCuenta() {
+        if (signInAccount != null) {
+            nombrePrincipal=signInAccount.getDisplayName();
+            correoPrincipal=signInAccount.getEmail();
+            Toast.makeText(this, nombrePrincipal+correoPrincipal, Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -213,4 +242,5 @@ public class Chat extends AppCompatActivity {
         Intent i = new Intent(this,Perfil.class);
         startActivity(i);
     }
+
 }

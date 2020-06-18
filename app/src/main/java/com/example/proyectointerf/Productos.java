@@ -42,12 +42,8 @@ public class Productos extends AppCompatActivity {
         recyclerProductos= (RecyclerView)findViewById(R.id.recyclerView2);
         mRootReference = FirebaseDatabase.getInstance().getReference(); //Hace referencia a la base de datos en el nodo principal
         recyclerProductos.setLayoutManager(new LinearLayoutManager(this));
-
-      llenarProductos();
-
-
+        llenarProductos();
         adapterProductos = new AdapterProductos(listaProductos);
-
         recyclerProductos.setAdapter(adapterProductos);
     }
 
@@ -92,8 +88,6 @@ public class Productos extends AppCompatActivity {
         listaProductos.add(new Producto(nombre,descripcion));
         recyclerProductos.setAdapter(adapterProductos);
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
