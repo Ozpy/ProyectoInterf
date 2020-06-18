@@ -1,11 +1,7 @@
 package com.example.proyectointerf;
 
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -15,12 +11,30 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.proyectointerf.BD.AdminSQLiteOpenHelper;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class AgregarProducto extends AppCompatActivity {
+    private GoogleSignInClient mGoogleSignInClient;
+    GoogleSignInAccount signInAccount;
+
+    private DatabaseReference mRootReference;    //Agrgar para la base de datos
+
     Spinner spn1;
     EditText etID, etNombre, etDescripcion;
     RadioButton rbLocal, rbImportado;
+
+    String idPr ;
+    String nomp ;
+    String desc ;
+    String nacion;
+    String categoria;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,46 +49,56 @@ public class AgregarProducto extends AppCompatActivity {
         etDescripcion=(EditText)findViewById(R.id.et_desc_PN);
         rbLocal=(RadioButton)findViewById(R.id.rb_local);
         rbImportado=(RadioButton)findViewById(R.id.rb_import);
+        mRootReference = FirebaseDatabase.getInstance().getReference(); //Hace referencia a la base de datos en el nodo principal
 
     }
 
-    public void registrar (View view) {
-        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this, "administracion", null, 1);
-        SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
+    //FIREBASE
+    private void LimpiarCampos() {
+        //Limpiar los campos de texto
+        etID.setText("");
+        etNombre.setText("");
+        etDescripcion.setText("");
+    }
+    private void LlenarDatosFirebase() {            //En firebase
+        Map<String, Object> datosUsuario = new HashMap<>();
 
-        String idPr = etID.getText().toString();
-        String nomp = etNombre.getText().toString();
-        String desc = etDescripcion.getText().toString();
-        String nacion="";
+        datosUsuario.put("nombre", nomp);
+        datosUsuario.put("descripcion", desc);
+        datosUsuario.put("nacionalidad", nacion);
+        datosUsuario.put("categoria", categoria);
+
+        mRootReference.child("Producto").push().setValue(datosUsuario);
+        Toast.makeText(this, "Registrado correctamente", Toast.LENGTH_SHORT).show();
+    }
+    private void LlenarDatos() {
+        idPr = etID.getText().toString();
+        nomp = etNombre.getText().toString();
+        desc = etDescripcion.getText().toString();
+        nacion="";
+
         if (rbImportado.isChecked())
             nacion = "Importado";
         if (rbLocal.isChecked())
             nacion = "Nacional";
-        String seleccionSpinner = spn1.getSelectedItem().toString();
+        categoria= spn1.getSelectedItem().toString();
+    }
 
-        if (!idPr.isEmpty() && !nomp.isEmpty() && !desc.isEmpty() && !nacion.isEmpty() && !seleccionSpinner.isEmpty()) {
-            ContentValues registro = new ContentValues();
+    //GENERAL
+    public void cancelar(View view){
+        Intent i = new Intent(this,Productos.class);
+        startActivity(i);
+    }
+    public void registrar (View view) {
 
-            registro.put("idProducto", idPr);
-            registro.put("nombre", nomp);
-            registro.put("descripcion", desc);
-            registro.put("tipo", nacion);
-            registro.put("nacionalidad", seleccionSpinner);
+        LlenarDatos();
 
-            if( BaseDeDatos != null){
-                try {
-                    BaseDeDatos.insert("producto",null,registro);
-                } catch (SQLException e){
-                    Log.e("Exception","Error: "+String.valueOf(e.getMessage()));
-                }
-                BaseDeDatos.close();
-            }
+        if (!idPr.isEmpty() && !nomp.isEmpty() && !desc.isEmpty() && !nacion.isEmpty()) {
+            LlenarDatosFirebase();
 
-            //Limpiar los campos de texto
-            etID.setText("");
-            etNombre.setText("");
-            etDescripcion.setText("");
-            etID.requestFocus();
+            Toast.makeText(this, "Registrado correctamente", Toast.LENGTH_SHORT).show();
+
+            LimpiarCampos();
 
             //Confirmar la operación realizada
             Toast.makeText(this,"Producto registrado",Toast.LENGTH_SHORT).show();
@@ -82,10 +106,4 @@ public class AgregarProducto extends AppCompatActivity {
             Toast.makeText(this,"Debes registrar primero los datos",Toast.LENGTH_SHORT).show();
         }
     }
-
-    public void cancelar(View view){
-        Intent i = new Intent(this,Productos.class);
-        startActivity(i);
-    }
-
 }
