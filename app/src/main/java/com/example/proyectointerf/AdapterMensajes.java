@@ -54,3 +54,4 @@ public class AdapterMensajes extends RecyclerView.Adapter<HolderMensaje>{
         return listMnesaje.size();
     }
 }
+//Carole
