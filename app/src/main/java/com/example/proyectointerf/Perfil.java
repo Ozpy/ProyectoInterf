@@ -93,12 +93,10 @@ public class Perfil extends AppCompatActivity {
         SignOut();
 
     }
-
     private void comprobarRepetido() {
         ComprobarRepetidoSolicitarDatosFirebase();
         Log.e("REPETIDO COMPROBAR", "" + repetido);
     }
-
     private void ModificarEditText() {
         ComprobarRepetidoSolicitarDatosFirebase();
         //TRUE REPETIDO & FALSE NO REPETIDO                 //INICIO DE FUNCION COMPROBARREPETIDOS
@@ -117,16 +115,14 @@ public class Perfil extends AppCompatActivity {
                             String nombre = user.getNombre();
                             String correo = user.getCorreo();
 
-
                             Log.e("NombreUsuario:", "" + nombre);
                             Log.e("Correo:", "" + correo);
-
                             Log.e("Datos:", "" + snapshot.getValue());
                             if (signInAccount.getEmail().equals(correo)) {
                                 repetido = 1;
-                                et_colonia.setText(colonia);
-                                et_calle.setText("LLENO");
-                                et_codigopost.setText(codigopost);
+                                et_colonia.setText(user.getColonia());
+                                et_calle.setText(user.getCalle());
+                                et_codigopost.setText(user.getCodigopostal());
                                 et_colonia.setEnabled(false);
                                 et_codigopost.setEnabled(false);
                                 et_calle.setEnabled(false);
@@ -288,13 +284,11 @@ public class Perfil extends AppCompatActivity {
         codigopost = et_codigopost.getText().toString();
 
     }
-
     public void ir() {
         Intent i = new Intent(this, Contactos.class);
         startActivity(i);
         this.finish();
     }
-
     private void SignOut() {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -308,7 +302,6 @@ public class Perfil extends AppCompatActivity {
             }
         });
     }
-
     private void RecuperarDatosCuenta() {
         if (signInAccount != null) {
             Uri personPhoto = signInAccount.getPhotoUrl();
@@ -334,7 +327,6 @@ public class Perfil extends AppCompatActivity {
             BaseDeDatos.close();
         }
     }
-
     private void ReiniciarTabla() {
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this, "administracion", null, 1);//NOMBRE DE ADMINISTRADOR
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
@@ -342,6 +334,8 @@ public class Perfil extends AppCompatActivity {
         BaseDeDatos.execSQL("create table usuario(id_firebase text primary key ,nombre text,correo text, calle text,colonia text, codigopostal text)");
         BaseDeDatos.close();
     }
+
+
 
     //MENU
 
@@ -351,7 +345,6 @@ public class Perfil extends AppCompatActivity {
         inflater.inflate(R.menu.menu_perfil, menu);
         return true;
     }
-
     @Override
     public boolean onPrepareOptionsMenu(final Menu menu) {
 
@@ -414,7 +407,6 @@ public class Perfil extends AppCompatActivity {
 
         return true;
     } //MODIFICAR MENU SEGUN CLIENTE O EMPLEADO
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Intent intent;

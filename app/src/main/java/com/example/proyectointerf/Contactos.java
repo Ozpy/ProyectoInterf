@@ -125,7 +125,7 @@ public class Contactos extends AppCompatActivity {
                             String correo = user.getCorreo();
                             String calle = user.getCalle();
                             String colonia = user.getColonia();
-                            String codigopost = user.getCodigopost();
+                            String codigopost = user.getCodigopostal();
                             String foto = user.getFoto();
                             i[0]++;
                             Log.e("\nNombre:", nombre);
