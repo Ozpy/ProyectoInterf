@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +39,14 @@ public class AdapterMensajes extends RecyclerView.Adapter<HolderMensaje>{
         holder.getNombre().setText(listMnesaje.get(position).getNombre());
         holder.getMensaje().setText(listMnesaje.get(position).getMensaje());
         holder.getHora().setText(listMnesaje.get(position).getHora());
-
+        if (listMnesaje.get(position).getType_mensaje().equals("2")){
+            holder.getFotoMensaje().setVisibility(View.VISIBLE);
+            holder.getMensaje().setVisibility(View.VISIBLE);
+            Glide.with(c).load(listMnesaje.get(position).getUrlFoto()).into(holder.getFotoMensaje());
+        }else if(listMnesaje.get(position).getType_mensaje().equals("1")){
+            holder.getFotoMensaje().setVisibility(View.GONE);
+            holder.getMensaje().setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
