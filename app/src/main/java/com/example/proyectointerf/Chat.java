@@ -23,11 +23,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -48,12 +48,19 @@ public class Chat extends AppCompatActivity {
     RecyclerView rvMensajes;
     EditText txtMensaje;
     ImageButton btnEnviar,btnEnviarFoto;
-
-
+    int tipo;
+    String nombreSala;
     String nombrePrincipal,correoPrincipal; //DATOS DEL PRINCIPAL
 
-    AdapterMensajes adapter;
 
+    //MESAJES OSCAR
+    DatabaseReference mRootReference;    //Agrgar para la base de datos
+    String sala="SALA";
+    ImageButton btnRegresar;
+
+    //TERMINA
+    AdapterMensajes adapter;
+    TextView tv_nombre;
     FirebaseDatabase database;
     DatabaseReference databaseReference;
     FirebaseStorage storage;
@@ -64,9 +71,11 @@ public class Chat extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-
-        //Esconder barra superior
+        nombreSala=getIntent().getStringExtra("nombre");
+        sala=nombreSala;
         getSupportActionBar().hide();
+
+        mRootReference = FirebaseDatabase.getInstance().getReference(); //Hace referencia a la base de datos en el nodo principal
 
         //Datos de cuenta actual
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -76,13 +85,23 @@ public class Chat extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         signInAccount = GoogleSignIn.getLastSignedInAccount(this);
 
+        tv_nombre=findViewById(R.id.tv_nombrePicado);
+
+        tv_nombre.setText(sala); //Si el que entro es admin
+        btnRegresar=findViewById(R.id.btn_regresar);
         fotoPerfil = (CircleImageView) findViewById(R.id.imagen_perfil);
-        nombre = (TextView) findViewById(R.id.textView2);
+        nombre = (TextView) findViewById(R.id.tv_nombrePicado);
         rvMensajes=(RecyclerView)findViewById(R.id.rvMensajes);
         txtMensaje=(EditText)findViewById(R.id.etMensaje);
         btnEnviar=(ImageButton)findViewById(R.id.ibEnviar);
         btnEnviarFoto=(ImageButton)findViewById(R.id.ibEnviarFoto);
 
+        btnRegresar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ir();
+            }
+        });
         database = FirebaseDatabase.getInstance();
         databaseReference = database.getReference("chat"); // Sala de Chat (Nombre)
         storage = FirebaseStorage.getInstance();
@@ -102,7 +121,7 @@ public class Chat extends AppCompatActivity {
                 Calendar c = Calendar.getInstance();
 
                 String datetime = DateFormat.getDateInstance().format(new Date());
-                databaseReference.push().setValue(new Mensaje(txtMensaje.getText().toString(),nombre.getText().toString(),"","1",datetime+"   "+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE)));
+                databaseReference.push().setValue(new Mensaje(txtMensaje.getText().toString(),nombre.getText().toString(),"","1",datetime+"   "+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE),sala));
                 txtMensaje.setText("");
             }
         });
@@ -124,6 +143,7 @@ public class Chat extends AppCompatActivity {
                 setScrollbar();
             }
         });
+/*
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -151,6 +171,10 @@ public class Chat extends AppCompatActivity {
 
             }
         });
+
+*/
+        adapter.borrarMensajes();
+        ComprobarTipoMostrarClienteSolicitarDatosFirebase();
     }
 
     public void setScrollbar(){
@@ -175,7 +199,7 @@ public class Chat extends AppCompatActivity {
                 public void onSuccess(Uri uri) {
                     Calendar c = Calendar.getInstance();
                     String datetime = DateFormat.getDateInstance().format(new Date());
-                    Mensaje m = new Mensaje(txtMensaje.getText().toString(),nombre.getText().toString(),"","2",datetime+" "+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE));
+                    Mensaje m = new Mensaje(txtMensaje.getText().toString(),nombre.getText().toString(),"","2",datetime+" "+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE),sala);
                     databaseReference.push().setValue(m);
 
                 }
@@ -197,12 +221,50 @@ public class Chat extends AppCompatActivity {
         }
     }
 
+    private void ComprobarTipoMostrarClienteSolicitarDatosFirebase() {
+        //TRUE REPETIDO & FALSE NO REPETIDO
+        mRootReference.child("chat").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                adapter.borrarMensajes();
+                for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
+
+                    mRootReference.child("chat").child(snapshot.getKey()).addValueEventListener(new ValueEventListener() {
+
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Mensaje m = dataSnapshot.getValue(Mensaje.class);
+
+                            String salita = m.getSala();
+
+                            if(salita.equals(nombreSala)){
+                                agregarCard(m);
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
+    private void agregarCard(Mensaje m) {
+        adapter.addMensaje(m);
+    }
+
     private void RecuperarDatosCuenta() {
         if (signInAccount != null) {
             nombrePrincipal=signInAccount.getDisplayName();
             correoPrincipal=signInAccount.getEmail();
             Toast.makeText(this, nombrePrincipal+correoPrincipal, Toast.LENGTH_SHORT).show();
         }
+    }
+    public void borrarData() {
+        adapter.borrarMensajes();
     }
 
 
@@ -234,7 +296,7 @@ public class Chat extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void ir(View view){
+    public void ir(){
         Intent i = new Intent(this,Contactos.class);
         startActivity(i);
     }

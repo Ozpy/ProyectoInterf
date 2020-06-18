@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +23,11 @@ public class AdapterMensajes extends RecyclerView.Adapter<HolderMensaje>{
     public void addMensaje(Mensaje m){
         listMnesaje.add(m);
         notifyItemInserted(listMnesaje.size());
+    }
+    public void borrarMensajes(){
+        listMnesaje.clear();
+        notifyDataSetChanged(); //le notificas al adaptador que no hay nada para llenar la vista
+
     }
 
     @NonNull
@@ -42,7 +45,7 @@ public class AdapterMensajes extends RecyclerView.Adapter<HolderMensaje>{
         if (listMnesaje.get(position).getType_mensaje().equals("2")){
             holder.getFotoMensaje().setVisibility(View.VISIBLE);
             holder.getMensaje().setVisibility(View.VISIBLE);
-            Glide.with(c).load(listMnesaje.get(position).getUrlFoto()).into(holder.getFotoMensaje());
+
         }else if(listMnesaje.get(position).getType_mensaje().equals("1")){
             holder.getFotoMensaje().setVisibility(View.GONE);
             holder.getMensaje().setVisibility(View.VISIBLE);

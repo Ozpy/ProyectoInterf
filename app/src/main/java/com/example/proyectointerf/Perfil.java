@@ -250,8 +250,6 @@ public class Perfil extends AppCompatActivity {
                             Log.e("Datos:", "" + snapshot.getValue());
 
                             if (signInAccount.getEmail().equals(correo)) {
-                                Toast.makeText(Perfil.this, "REPETIDO 111", Toast.LENGTH_SHORT).show();
-
                                 repetido = 1;
                                 Log.e("REPETIDO", "" + repetido);
                                 return;

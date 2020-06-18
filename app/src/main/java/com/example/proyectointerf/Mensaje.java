@@ -4,29 +4,40 @@ public class Mensaje {
 
     String mensaje;
     String nombre;
-    String urlFoto;
     String fotoPerfil;
     String type_mensaje;
     String hora;
+    String sala;
+
 
     public Mensaje() {
     }
 
-    public Mensaje(String mensaje, String nombre, String fotoPerfil, String type_mensaje, String hora) {
+    public Mensaje(String mensaje, String nombre, String fotoPerfil, String type_mensaje, String hora,String sala) {
         this.mensaje = mensaje;
         this.nombre = nombre;
         this.fotoPerfil = fotoPerfil;
         this.type_mensaje = type_mensaje;
         this.hora = hora;
+        this.sala= sala;
     }
 
-    public Mensaje(String mensaje, String nombre, String urlFoto, String fotoPerfil, String type_mensaje, String hora) {
+    public Mensaje(String mensaje, String nombre, String urlFoto, String fotoPerfil, String type_mensaje, String hora,String sala) {
         this.mensaje = mensaje;
         this.nombre = nombre;
-        this.urlFoto = urlFoto;
+
         this.fotoPerfil = fotoPerfil;
         this.type_mensaje = type_mensaje;
         this.hora = hora;
+        this.sala= sala;
+    }
+
+    public String getSala() {
+        return sala;
+    }
+
+    public void setSala(String sala) {
+        this.sala = sala;
     }
 
     public String getMensaje() {
@@ -69,11 +80,4 @@ public class Mensaje {
         this.hora = hora;
     }
 
-    public String getUrlFoto() {
-        return urlFoto;
-    }
-
-    public void setUrlFoto(String urlFoto) {
-        this.urlFoto = urlFoto;
-    }
 }

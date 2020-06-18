@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ProyectoInterf</string>
+    <string name="app_name">CotizApp</string>
     <string name="pntxt">Producto Nuevo</string>
     <string name="nombre_pntxt">Nombre</string>
     <string name="descri_pntxt">Descripción</string>
@@ -14,7 +14,7 @@
     <string name="PbtnActualizar">Avanzar</string>
 
     <string name="nombre">Nombre de Usuario</string>
-    <string name="enviar">Enviar</string>
+    <string name="regresar">Regresar</string>
     <string name="escribe">Escribe un mensaje...</string>
 
     <string name="titu_p">Productos</string>

@@ -120,7 +120,7 @@ public class Productos extends AppCompatActivity {
         }
     }
     public void ir(View view){
-        Intent i= new Intent(this,Chat.class);
+        Intent i= new Intent(this,Perfil.class);
         startActivity(i);
     }
 }

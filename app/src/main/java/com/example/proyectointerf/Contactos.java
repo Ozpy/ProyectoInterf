@@ -57,13 +57,14 @@ public class Contactos extends AppCompatActivity {
         adapterContactos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String emailC=listaContactos.get(recyclerContactos.getChildAdapterPosition(v)).getEmail();//.toString()
-                ir(emailC);
+                String nombrePicado=listaContactos.get(recyclerContactos.getChildAdapterPosition(v)).getNombre();//.toString()
+                Toast.makeText(Contactos.this, ""+nombrePicado, Toast.LENGTH_SHORT).show();
+                ir(nombrePicado);
             }
         });
 
         solicitarDatosFirebase();
-
+        ComprobarTipoMostrarClienteSolicitarDatosFirebase();
         recyclerContactos.setAdapter(adapterContactos);
     }
 
@@ -195,6 +196,55 @@ public class Contactos extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {}
         });
     } //Cambia el valor e la variable globar repetido a 1 si esta repetido el e-mail
+    private void ComprobarTipoMostrarClienteSolicitarDatosFirebase() {
+
+        //TRUE REPETIDO & FALSE NO REPETIDO
+        mRootReference.child("Usuario").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
+
+                    mRootReference.child("Usuario").child(snapshot.getKey()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            UserFirebase user = snapshot.getValue(UserFirebase.class);
+                            String nombre = user.getNombre();
+                            String correo = user.getCorreo();
+                            String tipos= user.getTipo();
+
+                            Log.e("NombreUsuario:",""+nombre);
+                            Log.e("Correo:",""+correo);
+
+                            Log.e("Datos:",""+snapshot.getValue());
+
+                            if(signInAccount.getEmail().equals(correo)){
+                                if(tipos.equals("Cliente")){
+                                    tipo=0;
+                                    borrarData();
+                                    agregarCard("Papeleria","papeleria@hotmail.com","ok");
+                                    Toast.makeText(Contactos.this, "Eres cliente", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(Contactos.this,Chat.class);
+                                    intent.putExtra("nombre",user.getNombre());
+                                    startActivity(intent);
+                                    finish();
+                                }else{
+                                    tipo=1;
+                                    Toast.makeText(Contactos.this, "Eres empleado", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    } //Cambia el valor e la variable globar repetido a 1 si esta repetido el e-mail
+
 
     //SQLite
     private void llenarContactos() {
@@ -225,16 +275,13 @@ public class Contactos extends AppCompatActivity {
         listaContactos.clear(); //Borras la data con la que llenas el recyclerview
         adapterContactos.notifyDataSetChanged(); //le notificas al adaptador que no hay nada para llenar la vista
     }
-    private void ir(String emailC) {
-        Bundle parametro = new Bundle();
-        parametro.putString("emailC", emailC);
+    private void ir(String nombrePicado) {
         Intent i;
         i = new Intent(this, Chat.class);
-        i.putExtras(parametro);
+        i.putExtra("nombre",nombrePicado);
         startActivity(i);
         this.finish();
     }
-
     //MENU
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

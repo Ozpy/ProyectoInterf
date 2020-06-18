@@ -24,18 +24,18 @@
             app:civ_border_width="2dp" />
 
         <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_nombrePicado"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="30dp"
+            android:layout_marginLeft="10dp"
             android:text="@string/nombre"
             android:textColor="#000000"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <ImageButton
-            android:id="@+id/imageButton3"
+            android:id="@+id/btn_regresar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
