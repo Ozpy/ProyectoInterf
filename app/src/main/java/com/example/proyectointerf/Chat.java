@@ -142,7 +142,7 @@ public class Chat extends AppCompatActivity {
         rvMensajes.scrollToPosition(adapter.getItemCount()-1);
     }
 
-    @Override
+    @Override //AQUÍ ES EL BUENO CAROLE
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PHOTO_SEND && resultCode == RESULT_OK){
