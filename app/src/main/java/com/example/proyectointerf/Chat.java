@@ -2,6 +2,7 @@ package com.example.proyectointerf;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,7 +19,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,6 +36,7 @@ import com.google.firebase.storage.UploadTask;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -142,16 +149,42 @@ public class Chat extends AppCompatActivity {
             Uri u = data.getData();
             storageReference = storage.getReference("imagenes_chat");//Imágenes de chat
             final StorageReference fotoReferencia = storageReference.child(u.getLastPathSegment());
-            fotoReferencia.putFile(u).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+          //  fotoReferencia.putFile(u).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+            fotoReferencia.putFile(u).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                 @Override
+                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                     if(!task.isSuccessful()){
+                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                             throw Objects.requireNonNull(task.getException());
+                         }
+                     }
+                     return fotoReferencia.getDownloadUrl();
+                 }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                 @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Calendar c = Calendar.getInstance();
-                    String datetime = DateFormat.getDateInstance().format(new Date());
-                Uri u = taskSnapshot.getUploadSessionUri();
-                Mensaje m = new Mensaje("Kevin ha enviado una foto",u.toString(),nombre.getText().toString(),"","2",datetime+"   "+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE));
-                databaseReference.push().setValue(m);
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()){
+                        Calendar c = Calendar.getInstance();
+                        String datetime = DateFormat.getDateInstance().format(new Date());
+                        Uri downloadUrl = task.getResult();
+                        Mensaje m = new Mensaje("Kevin te ha enviado una foto",downloadUrl.toString(),nombre.getText().toString(),"","2",datetime+"   "+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE));
+                        databaseReference.push().setValue(m);
+                        Glide.with(Chat.this).load(downloadUrl.toString()).into(fotoPerfil);
+                        Toast.makeText(Chat.this, "Subida exitosamente", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
+
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                    Calendar c = Calendar.getInstance();
+//                    String datetime = DateFormat.getDateInstance().format(new Date());
+//                Uri u = taskSnapshot.getDownloadUrl();
+//                Mensaje m = new Mensaje("Kevin ha enviado una foto",u.toString(),nombre.getText().toString(),"","2",datetime+"   "+c.get(Calendar.HOUR_OF_DAY)+":"+c.get(Calendar.MINUTE));
+//                databaseReference.push().setValue(m);
+//                }
+            //});
         }
     }
 
