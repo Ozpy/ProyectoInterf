@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Contactos extends AppCompatActivity {
 
@@ -37,6 +40,7 @@ public class Contactos extends AppCompatActivity {
     GoogleSignInAccount signInAccount ;
     MenuItem menuItemAdd;
     int tipo=0;
+    private Button btnestado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,7 @@ public class Contactos extends AppCompatActivity {
         listaContactos = new ArrayList<>();
         recyclerContactos= (RecyclerView)findViewById(R.id.recyclerView);
         recyclerContactos.setLayoutManager(new LinearLayoutManager(this));
+        btnestado=(Button)findViewById(R.id.btEstado);
 
         adapterContactos=new AdapterContactos(listaContactos);
 
@@ -64,6 +69,19 @@ public class Contactos extends AppCompatActivity {
         solicitarDatosFirebase();
 
         recyclerContactos.setAdapter(adapterContactos);
+
+        btnestado.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String, Object> usuarioMap = new HashMap<>();
+                if(listaContactos.get(recyclerContactos.getChildAdapterPosition(v)).getEstado().equals("ok"))
+                    usuarioMap.put("estado", "pendiente");
+                else if(listaContactos.get(recyclerContactos.getChildAdapterPosition(v)).getEstado().equals("pendiente"))
+                    usuarioMap.put("estado", "ok");
+                mRootReference.child("Usuario").updateChildren(usuarioMap);
+            }
+        });
+
     }
 
 

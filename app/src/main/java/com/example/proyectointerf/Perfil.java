@@ -40,6 +40,7 @@ public class Perfil extends AppCompatActivity {
 
     private GoogleSignInClient mGoogleSignInClient;
     GoogleSignInAccount signInAccount;
+    private Button btnActualizar;
 
     private DatabaseReference mRootReference;    //Agrgar para la base de datos
 
@@ -64,6 +65,7 @@ public class Perfil extends AppCompatActivity {
         //FIREBASE INSTANCIA
         mRootReference = FirebaseDatabase.getInstance().getReference(); //Hace referencia a la base de datos en el nodo principal
 
+        btnActualizar = (Button)findViewById(R.id.btnActualizar);
 
         //Datos de cuenta actual
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -88,6 +90,19 @@ public class Perfil extends AppCompatActivity {
         comprobarRepetido();
         ModificarEditText();
         SignOut();
+
+        btnActualizar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String, Object> usuarioMap = new HashMap<>();
+                usuarioMap.put("", "");
+                usuarioMap.put("", "");
+                usuarioMap.put("", "");
+                usuarioMap.put("", "");
+                usuarioMap.put("", "");
+                mRootReference.child("Usuario").updateChildren(usuarioMap);
+            }
+        });
 
     }
 
@@ -402,4 +417,6 @@ public class Perfil extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
 }
