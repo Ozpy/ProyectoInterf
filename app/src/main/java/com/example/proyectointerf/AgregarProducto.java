@@ -53,42 +53,6 @@ public class AgregarProducto extends AppCompatActivity {
 
     }
 
-    //FIREBASE
-    private void LimpiarCampos() {
-        //Limpiar los campos de texto
-        etID.setText("");
-        etNombre.setText("");
-        etDescripcion.setText("");
-    }
-    private void LlenarDatosFirebase() {            //En firebase
-        Map<String, Object> datosUsuario = new HashMap<>();
-
-        datosUsuario.put("nombre", nomp);
-        datosUsuario.put("descripcion", desc);
-        datosUsuario.put("nacionalidad", nacion);
-        datosUsuario.put("categoria", categoria);
-
-        mRootReference.child("Producto").push().setValue(datosUsuario);
-        Toast.makeText(this, "Registrado correctamente", Toast.LENGTH_SHORT).show();
-    }
-    private void LlenarDatos() {
-        idPr = etID.getText().toString();
-        nomp = etNombre.getText().toString();
-        desc = etDescripcion.getText().toString();
-        nacion="";
-
-        if (rbImportado.isChecked())
-            nacion = "Importado";
-        if (rbLocal.isChecked())
-            nacion = "Nacional";
-        categoria= spn1.getSelectedItem().toString();
-    }
-
-    //GENERAL
-    public void cancelar(View view){
-        Intent i = new Intent(this,Productos.class);
-        startActivity(i);
-    }
     public void registrar (View view) {
 
         LlenarDatos();
@@ -105,5 +69,42 @@ public class AgregarProducto extends AppCompatActivity {
         }else {
             Toast.makeText(this,"Debes registrar primero los datos",Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void LimpiarCampos() {
+        //Limpiar los campos de texto
+        etID.setText("");
+        etNombre.setText("");
+        etDescripcion.setText("");
+    }
+
+    private void LlenarDatosFirebase() {            //En firebase
+        Map<String, Object> datosUsuario = new HashMap<>();
+
+        datosUsuario.put("nombre", nomp);
+        datosUsuario.put("descripcion", desc);
+        datosUsuario.put("nacionalidad", nacion);
+        datosUsuario.put("categoria", categoria);
+
+        mRootReference.child("Producto").push().setValue(datosUsuario);
+        Toast.makeText(this, "Registrado correctamente", Toast.LENGTH_SHORT).show();
+    }
+
+    private void LlenarDatos() {
+        idPr = etID.getText().toString();
+        nomp = etNombre.getText().toString();
+        desc = etDescripcion.getText().toString();
+        nacion="";
+
+        if (rbImportado.isChecked())
+            nacion = "Importado";
+        if (rbLocal.isChecked())
+            nacion = "Nacional";
+        categoria= spn1.getSelectedItem().toString();
+    }
+
+    public void cancelar(View view){
+        Intent i = new Intent(this,Productos.class);
+        startActivity(i);
     }
 }
